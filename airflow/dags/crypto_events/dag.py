@@ -2,12 +2,17 @@
 from __future__ import annotations
 
 import pendulum
+from pathlib import Path
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.utils.task_group import TaskGroup
 
-from airflow.dags import config
-from airflow.dags.utils import db_tasks, dq, extract
+from crypto_events import config
+from crypto_events.utils import dq, extract
+
+SQL_DIR = Path(__file__).parent / "sql"
 
 
 def _notify_success(**_):
@@ -23,15 +28,22 @@ def build_dag() -> DAG:
         default_args={"owner": "data-eng", "depends_on_past": False},
         max_active_runs=1,
         tags=["crypto", "meli", "dq"],
+        template_searchpath=[str(SQL_DIR)],
     ) as dag:
         extract_task = PythonOperator(
             task_id="extract_generate_history",
             python_callable=extract.ensure_recent_history,
         )
 
-        transform_task = PythonOperator(
+        transform_task = SQLExecuteQueryOperator(
             task_id="transform_build_candidate",
-            python_callable=db_tasks.build_events_candidate,
+            conn_id=config.POSTGRES_CONN_ID,
+            sql="build_events_candidate.sql",
+            params={
+                "regex": config.RAW_DATE_REGEX,
+                "window_interval": config.WINDOW_INTERVAL,
+                "range_interval": config.RANGE_INTERVAL,
+            },
         )
 
         with TaskGroup(group_id="qa_quality_checks", prefix_group_id=False) as qa_group:
@@ -55,9 +67,13 @@ def build_dag() -> DAG:
 
             ge_raw >> ge_candidate
 
-        load_task = PythonOperator(
+        load_task = SQLExecuteQueryOperator(
             task_id="load_merge_to_prod",
-            python_callable=db_tasks.merge_to_prod,
+            conn_id=config.POSTGRES_CONN_ID,
+            sql="merge_to_prod.sql",
+            params={
+                "range_interval": config.RANGE_INTERVAL,
+            },
         )
 
         notify = PythonOperator(

@@ -1,11 +1,10 @@
-"""Central configuration for the crypto events DAG.
-
-Values can be overridden via Airflow Variables (e.g. crypto_window_days).
-"""
+"""Central configuration for the crypto events DAG with template helpers."""
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Sequence
+
+from jinja2 import Environment, FileSystemLoader
 
 try:
     from airflow.models import Variable
@@ -32,26 +31,34 @@ RAW_DATE_REGEX = get_var(
 )
 WINDOW_DAYS = int(get_var("crypto_window_days", 5))
 MIN_ROWS_PER_DAY = int(get_var("crypto_min_rows_per_day", 4))
-ALLOWED_SITES = tuple(get_var("crypto_allowed_sites", "ARGENTINA,BRASIL,MEXICO").split(","))
-ALLOWED_CRYPTOS = tuple(get_var("crypto_allowed_cryptos", "BTC,ETH,USDC").split(","))
+ALLOWED_SITES: Sequence[str] = tuple(
+    site.strip() for site in get_var("crypto_allowed_sites", "ARGENTINA,BRASIL,MEXICO").split(",")
+    if site.strip()
+)
+ALLOWED_CRYPTOS: Sequence[str] = tuple(
+    crypto.strip() for crypto in get_var("crypto_allowed_cryptos", "BTC,ETH,USDC").split(",")
+    if crypto.strip()
+)
 WINDOW_INTERVAL = f"{WINDOW_DAYS} days"
 RANGE_INTERVAL = f"{max(WINDOW_DAYS - 1, 1)} day"
+
+SQL_DIR = Path(__file__).parent / "sql"
+SQL_ENV = Environment(loader=FileSystemLoader(str(SQL_DIR)), autoescape=False, trim_blocks=True, lstrip_blocks=True)
+
+
+def render_sql(template_name: str, **params: Any) -> str:
+    """Render a SQL template stored under the DAG's sql/ directory."""
+    template = SQL_ENV.get_template(template_name)
+    return template.render(**params)
 
 
 def raw_validation_payload() -> Dict[str, Any]:
     return {
         "runtime_parameters": {
-            "query": f"""
-                SELECT site_id,
-                       user_id,
-                       purchase_date,
-                       crypto_type,
-                       purchase_price,
-                       purchase_units,
-                       inserted_at
-                FROM raw.bt_crypto_transaction_history
-                WHERE inserted_at >= now() - INTERVAL '{WINDOW_INTERVAL}'
-            """
+            "query": render_sql(
+                "raw_validation.sql",
+                window_interval=WINDOW_INTERVAL,
+            )
         },
         "batch_identifiers": {"default_identifier_name": "raw_history_window"},
         "data_asset_name": "raw_history_last5",
@@ -61,19 +68,10 @@ def raw_validation_payload() -> Dict[str, Any]:
 def staging_validation_payload() -> Dict[str, Any]:
     return {
         "runtime_parameters": {
-            "query": f"""
-                SELECT site_id,
-                       user_id,
-                       purchase_date,
-                       crypto_type,
-                       purchase_price,
-                       purchase_units,
-                       purchase_value,
-                       ROUND(purchase_price * purchase_units, 8) AS purchase_value_calc,
-                       staged_at
-                FROM staging.bt_crypto_events_candidate
-                WHERE purchase_date BETWEEN CURRENT_DATE - INTERVAL '{RANGE_INTERVAL}' AND CURRENT_DATE
-            """
+            "query": render_sql(
+                "staging_validation.sql",
+                range_interval=RANGE_INTERVAL,
+            )
         },
         "batch_identifiers": {"default_identifier_name": "staging_candidate_window"},
         "data_asset_name": "staging_candidate_last5",

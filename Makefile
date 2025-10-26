@@ -18,6 +18,7 @@ destroy:
 	chmod -R u+w $(LOG_DIR) airflow/logs_old 2>/dev/null || true
 	rm -rf $(LOG_DIR) airflow/logs_old
 	mkdir -p $(LOG_DIR)
+	chmod -R 777 $(LOG_DIR)
 
 reset: destroy init up
 
@@ -37,3 +38,4 @@ clean:
 	chmod -R u+w $(LOG_DIR) airflow/logs_old 2>/dev/null || true
 	rm -rf $(LOG_DIR) airflow/logs_old
 	mkdir -p $(LOG_DIR)
+	chmod -R 777 $(LOG_DIR)
