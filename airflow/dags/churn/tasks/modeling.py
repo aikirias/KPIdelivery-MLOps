@@ -8,21 +8,14 @@ from typing import Any, Dict, List
 
 import mlflow
 import mlflow.spark
-import numpy as np
-import pandas as pd
-import shap
-from matplotlib import pyplot as plt
 from mlflow.tracking import MlflowClient
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression, LogisticRegressionModel
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.ml.feature import VectorAssembler
 from pyspark.sql import SparkSession
-from sklearn.linear_model import LogisticRegression as SklearnLogReg
 
 from churn import config
-
-plt.switch_backend("Agg")
 
 HYPERPARAM_GRID: List[Dict[str, float]] = [
     {"regParam": 0.01, "elasticNetParam": 0.0},
@@ -202,6 +195,14 @@ def _log_mean_abs_shap(run_id: str, importance: Dict[str, float], shap_path: Pat
 
 
 def _log_explainability(model, run_id: str) -> tuple[Path, Dict[str, float]]:
+    import numpy as np
+    import pandas as pd
+    import shap
+    from matplotlib import pyplot as plt
+    from sklearn.linear_model import LogisticRegression as SklearnLogReg
+
+    plt.switch_backend("Agg")
+
     pdf = pd.read_parquet(config.FEATURES_PATH)
     feature_df = pdf[config.FEATURE_COLUMNS].fillna(0)
     background = (
