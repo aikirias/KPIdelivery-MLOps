@@ -1,6 +1,7 @@
 """Data extraction helpers (rolling window faker seeding)."""
 from __future__ import annotations
 
+import logging
 import random
 from datetime import date, timedelta
 from typing import Any
@@ -9,6 +10,8 @@ from faker import Faker
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 from crypto_events import config
+
+logger = logging.getLogger(__name__)
 
 
 def _purchase_date_string(target_date: date) -> str:
@@ -30,6 +33,14 @@ def _ensure_rows_for_day(cur, target_date: date, min_rows: int, seed: int) -> No
     )
     (current_rows,) = cur.fetchone()
     missing = max(0, min_rows - current_rows)
+    logger.info(
+        "Seeding raw history for %s with seed=%s (current_rows=%s, min_rows=%s, to_insert=%s)",
+        day_str,
+        seed,
+        current_rows,
+        min_rows,
+        missing,
+    )
     if missing == 0:
         return
 
@@ -63,6 +74,7 @@ def ensure_recent_history(min_rows: int | None = None, **context: Any) -> None:
     target_rows = min_rows or config.MIN_ROWS_PER_DAY
     anchor_date = _anchor_date_from_context(context)
     base_seed = anchor_date.toordinal() * 1000
+    logger.info("Starting Faker seeding for anchor_date=%s base_seed=%s", anchor_date, base_seed)
     with hook.get_conn() as conn:
         with conn.cursor() as cur:
             for offset in range(config.WINDOW_DAYS):
