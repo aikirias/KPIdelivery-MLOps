@@ -21,3 +21,13 @@ Daily incremental pipeline that extracts the last five days of raw crypto transa
   - `extract.py` handles Faker seeding.
   - `dq.py` wraps GE execution and reject insertion logic.
 - Use the repo-level `Makefile` targets (`make reset`, `make dag-run`, etc.) to spin up the full stack and manually trigger the DAG end-to-end.
+
+## Answers
+1. **Tabla adicional:** Sí, se usa `staging.bt_crypto_events_candidate` para aislar los cálculos antes de tocar `prod.bt_crypto_events` y `dqm.bt_crypto_events_rejects` para guardar rechazos con su motivo. Esto permite validar y depurar sin contaminar la tabla final.
+2. **Proceso ETL (4+ pasos):**
+   - **Extract:** Consultar `raw.bt_crypto_transaction_history` para los últimos cinco días lógicos; Faker sólo genera filas faltantes para mantener el volumen mínimo.
+   - **Transform:** Truncar y poblar `staging.bt_crypto_events_candidate`, convirtiendo fechas, calculando `purchase_value` y normalizando el rango objetivo.
+   - **Validate:** Ejecutar las suites de Great Expectations sobre `raw` y `staging`; si falla, registrar rechazos en `dqm` y abortar el DAG.
+   - **Load:** Ejecutar `merge_to_prod.sql`, que hace upsert sobre `prod.bt_crypto_events` y desactiva (`is_active=false`) los registros del rango que ya no existen.
+   - **Post-load:** Mantener métricas DQ y notificar éxito.
+3. **Rolling 5-day refresh:** Cada run reconstruye `staging` únicamente con el rango móvil (hoy-4 … hoy). El merge copia nuevos registros, actualiza cambios vía `ON CONFLICT … DO UPDATE`, y un `UPDATE` adicional marca `is_active=false` para las claves del rango ausentes en staging, logrando “add/modify/deactivate”. Todo se ejecuta sólo si ambas validaciones GE pasan, garantizando integridad antes de tocar `prod.bt_crypto_events`.
