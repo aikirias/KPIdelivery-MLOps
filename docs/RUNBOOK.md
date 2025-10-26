@@ -1,132 +1,130 @@
-# crypto_events_dag
+﻿# crypto_events_dag
 
-This document focuses on how the Airflow DAG works, how to operate it, and ways to validate its behavior end-to-end.
+Este documento resume cómo funciona el DAG de Airflow, cómo operarlo y qué validar en cada corrida de punta a punta.
 
-## Purpose
-`crypto_events_dag` orchestrates a validate-before-load pipeline for MELI's crypto transactions. It extracts the last five days of history, stages clean candidates, runs Great Expectations suites, and performs an upsert + logical delete into `prod.BT_CRYPTO_EVENTS`. Any invalid rows are diverted to `dqm.BT_CRYPTO_EVENTS_REJECTS` with a reason code.
+## Propósito
+`crypto_events_dag` implementa un pipeline *validate-before-load* para las transacciones cripto de MELI. Extrae el historial de los últimos 5 días, genera candidatos limpios en *staging*, ejecuta suites de Great Expectations y realiza un *upsert* con baja lógica en `prod.BT_CRYPTO_EVENTS`. Todo registro inválido se deriva a `dqm.BT_CRYPTO_EVENTS_REJECTS` junto con el motivo.
 
-## Task Graph
-1. **generate_fake_history_last_5_days** – Calls `python /opt/airflow/scripts/faker_seed.py` to ensure each of the last five dates has fresh rows (forward-only inserts).
-2. **build_events_candidate** – Truncates `staging.BT_CRYPTO_EVENTS_CANDIDATE`, converts text dates with a regex guard, calculates `PURCHASE_VALUE`, and inserts only the rolling 5-day window.
-3. **ge_validate_raw** – Runs `suite_raw_history` from the shared checkpoint. Missing columns, bad enums/date formats, or negative numbers fail the task.
-4. **ge_validate_candidate** – Runs `suite_staging_candidate`. Verifies `DATE` typing, math integrity, positive values, and uniqueness.
-5. **merge_to_prod** – Transactional upsert with `ON CONFLICT` plus logical deactivation for rows that vanished from staging during the same window.
-6. **vacuum_analyze_prod** – Optional VACUUM ANALYZE for the prod table to keep stats fresh.
-7. **notify_success** – Placeholder notifier (stdout log) signaling the daily run completed.
+## Grafo de tareas
+1. **generate_fake_history_last_5_days** – Ejecuta `python /opt/airflow/scripts/faker_seed.py` para garantizar filas frescas (sólo inserciones hacia adelante) en la ventana móvil.
+2. **build_events_candidate** – Trunca `staging.BT_CRYPTO_EVENTS_CANDIDATE`, convierte fechas, calcula `PURCHASE_VALUE` y carga únicamente el rango de 5 días.
+3. **ge_validate_raw** – Corre la suite `suite_raw_history`. Falla si faltan columnas, enums inválidos, fechas mal formateadas o valores negativos.
+4. **ge_validate_candidate** – Ejecuta `suite_staging_candidate`, verificando tipos `DATE`, consistencia matemática y duplicados.
+5. **merge_to_prod** – *Upsert* transaccional con `ON CONFLICT` + desactivación lógica de claves que desaparecen del staging en el mismo rango.
+6. **vacuum_analyze_prod** – Paso opcional para mantener estadísticas actualizadas.
+7. **notify_success** – Log final indicando que la corrida cerró correctamente.
 
-Any Great Expectations failure stops the DAG before touching prod. The helper functions `capture_raw_rejects` / `capture_staging_rejects` compute and store the offending rows (site/user/date/crypto plus reason) for auditability.
+Si alguna validación de GE falla, el DAG se detiene antes de tocar producción. Los helpers `capture_raw_rejects` y `capture_staging_rejects` guardan sitio/usuario/fecha/cripto + regla fallida para auditoría.
 
-## Running the DAG
-1. Start the stack (see main README) so Airflow, Postgres, Redis, MinIO, etc. are live (`make init && make up`).
-2. Enable `crypto_events_dag` in the Airflow UI. It has a daily schedule but you can trigger ad hoc:
+## Cómo ejecutarlo
+1. Levantá el stack con `make init && make up` (ver README principal).
+2. Habilitá el DAG desde la UI o lanzalo manualmente:
    ```bash
    make dag-run
    ```
-3. Track progress in the UI or stream logs:
+3. Monitoreá desde la UI o con logs:
    ```bash
    docker compose -f infrastructure/docker-compose.yml logs -f airflow-scheduler
    docker compose -f infrastructure/docker-compose.yml logs -f airflow-worker
    ```
 
-## Verifying Behavior
-- **Schemas & seeds**: In pgAdmin or psql, inspect `raw.BT_CRYPTO_TRANSACTION_HISTORY` to confirm the seed rows plus recent Faker output.
-- **Staging refresh**: After `build_events_candidate`, query `staging.BT_CRYPTO_EVENTS_CANDIDATE` to see only the last five days with parsed `DATE` values and computed `purchase_value`.
-- **GE outcomes**:
-  - Validation summaries are inserted into `dqm.DQ_RUNS` (JSON details column).
-  - Row-level rejects land in `dqm.BT_CRYPTO_EVENTS_REJECTS`. Filter by `suite_name` to see which suite failed and why.
-  - Validation artifacts + Data Docs publish to MinIO (`ge-artifacts` bucket). Build docs if needed:
+## Validaciones recomendadas
+- **Seeds**: en pgAdmin/psql revisá `raw.BT_CRYPTO_TRANSACTION_HISTORY` para confirmar las filas iniciales + Faker.
+- **Staging**: tras `build_events_candidate` inspeccioná `staging.BT_CRYPTO_EVENTS_CANDIDATE`; deben existir sólo fechas del rango móvil y `purchase_value` calculado.
+- **Great Expectations**:
+  - Resúmenes en `dqm.DQ_RUNS`.
+  - Rechazos fila a fila en `dqm.BT_CRYPTO_EVENTS_REJECTS` (filtrá por `suite_name`).
+  - Data Docs disponibles en MinIO (`ge-artifacts`); reconstruilos con:
     ```bash
     docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
       great_expectations --v3-api docs build
     ```
-    Then browse `http://localhost:9001/browser/ge-artifacts/data_docs` in the MinIO console.
-- **Prod merge**: Query `prod.BT_CRYPTO_EVENTS` to verify upserts and `is_active` toggling. For example, rows removed from staging in the last window should flip to `false`.
+    Luego navega a `http://localhost:9001/browser/ge-artifacts/data_docs`.
+- **Prod**: consulta `prod.BT_CRYPTO_EVENTS` para validar *upserts* y toggles de `is_active`.
 
-### Quick Troubleshooting
+### Troubleshooting rápido
 
-| Symptom | Checks | Resolution |
+| Síntoma | Qué revisar | Acción |
 | --- | --- | --- |
-| DAG run stuck on GE | Look at `dqm.BT_CRYPTO_EVENTS_REJECTS` for rule violations and inspect logs under `airflow/logs/dag_id=crypto_events_dag/...` | Fix raw data (or rerun Faker) and re-trigger DAG |
-| No logs in UI | Host folder `airflow/logs` missing or read-only | `make clean` (ensures 777 perms) and `make up` |
-| Prod table unchanged | GE task failed or DAG aborted before merge | Rerun once validations succeed; merge is transactional so prod remains safe |
+| La corrida queda detenida en GE | `dqm.BT_CRYPTO_EVENTS_REJECTS` + logs de la tarea | Corregí los datos (o regenerá vía Faker) y relanzá el DAG |
+| No se ven logs en la UI | ¿Existe `airflow/logs` en el host con permisos 777? | `make clean` + `make up` |
+| Producción no cambia | GE falló o se abortó antes de `merge_to_prod` | Re-ejecutá tras validar; el merge es transaccional |
 
-## Failure Recovery
-If either validation fails, fix the offending raw data (or adjust Faker settings), optionally delete quarantine records for clarity, and re-trigger the DAG (`make dag-run`). Because the merge step never ran, prod remains unchanged until both suites pass.
+## Recuperación
+Si alguna regla falla, corregí la fuente (o eliminá los registros en cuarentena) y corré `make dag-run` nuevamente. Como el merge nunca se ejecutó, `prod` permanece intacto.
 
 ---
 
 # churn_training_dag
 
-Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, trains a logistic regression model, and manages the MLflow registry lifecycle. The DAG is now scheduled via Airflow Datasets tied to the source CSVs, so it only runs when `churn_data_watchdog` detects a real data change.
+Pipeline de churn basado en Spark que consume `airflow/mlops/*.csv`, genera *features*, entrena una regresión logística y gestiona el ciclo de vida del modelo en MLflow. Está programado por Datasets de Airflow: sólo corre cuando `churn_data_watchdog` detecta cambios reales en los CSV.
 
-## Task Graph
-1. **clean_raw_sources** – Validates + normalizes the CSV inputs, writes canonical parquet snapshots for payments and the user base.
-2. **feature_engineering** – Aggregates payments (counts, sums, discounts), joins app usage + demographics + funds/ML activity, derives binary features, computes the target label, and updates the drift reference history (last 8 weekly snapshots).
-3. **train_spark_model** – Creates a Spark session against `spark://spark-master:7077`, runs a small grid search over `regParam` / `elasticNetParam` for logistic regression, evaluates each candidate on a holdout split, and logs metrics + params + explainability artifacts (SHAP plot + mean absolute values) to MLflow (`churn_retention` experiment). The task also records Evidently’s latest `drift_share` + `drift_detected` metrics so each run links model quality with feature stability. Artifacts land in MinIO bucket `mlflow-artifacts`.
-4. **evaluate_candidate** – Registers the run as a new model version inside MLflow (`churn-model`), compares its ROC AUC with the current Production version, and stores `{promote, candidate_version, metrics}` in XCom.
-5. **decide_promotion** – Branches to `promote_model` or `skip_promotion` depending on the evaluation result.
-6. **promote_model / skip_promotion** – Transition the new version to Production (archiving old versions) or just log that it was skipped. Promotion now requires the candidate ROC AUC to beat the current Production model by at least `CHURN_PROMOTION_MIN_DELTA` (default 0.005) to avoid flip-flopping on noise.
-7. **notify_success** – Final log hook.
+## Grafo de tareas
+1. **clean_raw_sources** – Valida/normaliza los CSV y guarda snapshots parquet (pagos + base de usuarios).
+2. **feature_engineering** – Calcula agregados, une fuentes auxiliares, crea etiqueta binaria y actualiza el historial de referencia (últimas 8 semanas).
+3. **train_spark_model** – Levanta Spark (`spark://spark-master:7077`), ejecuta una grilla chica de `regParam`/`elasticNetParam`, evalúa AUC y registra parámetros + métricas + artefactos (dataset, SHAP PNG, mean_abs_shap) en MLflow. También loguea `recent_drift_share` / `recent_drift_detected` reutilizando Evidently.
+4. **evaluate_candidate** – Registra el run como nueva versión en `churn-model`, compara AUC vs. la versión Production vigente y guarda la decisión.
+5. **decide_promotion** – Rama hacia `promote_model` o `skip_promotion`.
+6. **promote_model / skip_promotion** – Promueve al stage Production (archivando versiones previas) o deja registro del rechazo. Se requiere que el candidato supere al actual por `CHURN_PROMOTION_MIN_DELTA` (0.005 por defecto).
+7. **notify_success** – Log final informativo.
 
-## Key Files / Paths
-- Raw CSVs: `airflow/mlops/*.csv` (mounted at `/opt/mlops` inside Airflow and Spark containers).
-- Cleaned snapshots: `airflow/mlops/artifacts/payments_clean.parquet` + `user_base.parquet`.
-- Feature matrix: `airflow/mlops/artifacts/churn_features.parquet`.
-- Reference history (up to 8 snapshots): `airflow/mlops/artifacts/reference_history.parquet`.
-- MLflow experiment: `churn_retention` (tracking URI `http://mlflow:5000`).
-- Model registry: `churn-model` (Production stage consumed by the Streamlit app).
+## Artefactos clave
+- CSV origen: `airflow/mlops/*.csv` (montados en `/opt/mlops`).
+- Parquets intermedios: `airflow/mlops/artifacts/payments_clean.parquet`, `user_base.parquet`, `churn_features.parquet`.
+- Historial de referencia: `airflow/mlops/artifacts/reference_history.parquet`.
+- MLflow: experimento `churn_retention`, modelo `churn-model`.
 
-## Verifying Behavior
-- After a run, browse `http://localhost:5000` to inspect the new run/metrics and confirm whether the candidate was promoted to Production.
-- Spark UI (`http://localhost:8082`) shows the submitted application while `train_spark_model` is running.
-- The Streamlit app (`http://localhost:8601`) loads the Production model once it exists; the UI displays a warning if only the heuristic fallback is available.
+### Qué revisar
+- MLflow (`http://localhost:5000`) debe mostrar los nuevos runs con métricas `roc_auc`, `recent_drift_share`, `recent_drift_detected` y artefactos de explainability.
+- Spark UI (`http://localhost:8082`) evidencia las corridas activas mientras `train_spark_model` está ejecutando.
+- Streamlit (`http://localhost:8601`) carga el modelo Production y muestra SHAP una vez que existe una versión promovida.
 
 ---
 
 # churn_data_watchdog
 
-Daily DAG that hashes every churn CSV and emits all Dataset outlets when any file changes. `churn_training_dag` lists those Datasets in its schedule, so it automatically retrains after data refreshes and stays idle otherwise. The state file lives in `airflow/mlops/artifacts/source_hashes.json`.
+DAG diario que calcula hashes de todos los CSV de churn y emite eventos de Dataset cuando detecta cambios. `churn_training_dag` depende de esos Datasets, por lo que se reentrena sólo cuando hay novedades. El estado se guarda en `airflow/mlops/artifacts/source_hashes.json`.
 
-## Tasks
-1. **detect_csv_changes** (`ShortCircuitOperator`) – verifies each CSV exists under `/opt/mlops`, computes MD5 hashes, compares them with the previous snapshot stored in `source_hashes.json`, and short-circuits if nothing changed.
-2. **emit_dataset_update** (`EmptyOperator`) – has the five churn datasets (`file:///opt/mlops/*.csv`) in its `outlets`. When it runs, the scheduler records one event per dataset, immediately triggering `churn_training_dag`.
+## Tareas
+1. **detect_csv_changes** (`ShortCircuitOperator`) – verifica existencia de archivos, calcula MD5 y compara contra el snapshot previo; si no hay cambios, corta la ejecución.
+2. **emit_dataset_update** (`EmptyOperator`) – expone los cinco Datasets (`file:///opt/mlops/*.csv`). Cuando corre, el scheduler crea un evento por dataset y dispara la DAG de entrenamiento.
 
-## Usage
-- First run: delete `airflow/mlops/artifacts/source_hashes.json` (or leave it missing), then trigger the DAG. It will detect “changes” because there is no baseline and emit events.
-- Ongoing: allow the daily schedule to run; if no files changed, it exits quickly and no training occurs. If you manually edit a CSV (e.g., via JupyterLab), rerun the watchdog to kick off retraining.
-- Debugging: query `dataset_event` table in the Airflow metadata DB to verify events were created, or inspect the DAG run log (look for “Detectados cambios en los CSV…”).
+## Uso
+- **Primera vez**: eliminá `source_hashes.json` y gatillá el DAG; se interpretará como “hubo cambios” y se emitirá el evento.
+- **Día a día**: dejá que corra según schedule; si no hay cambios, termina en segundos. Editaste un CSV manualmente? volvete a ejecutar el watchdog.
+- **Debug**: consultá la tabla `dataset_event` (DB de Airflow) para confirmar que se generaron eventos o revisá el log (“Detectados cambios…”).
 
 ---
 
 # churn_drift_monitor_w
 
-Weekly Evidently workflow that compares the latest scoring snapshot against the rolling 8-week reference.
+Pipeline semanal con Evidently que compara el snapshot actual contra la media de las últimas 8 semanas.
 
-## Task Graph
-1. **build_current_snapshot** – Copies `churn_features.parquet`, injects light noise to simulate the current week, and writes `current_snapshot.parquet`.
-2. **run_drift_report** – Executes Evidently's `DataDriftPreset`, saves an HTML report under `airflow/mlops/artifacts/drift_reports/`, and uploads it to MinIO bucket `mlflow-artifacts` (key `drift-reports/<date>.html`). Returns `{drift_detected, report_path, s3_key}` via XCom.
-3. **log_drift_result** – Prints whether drift was detected and surfaces the S3 key in the task log for quick access.
+## Grafo de tareas
+1. **build_current_snapshot** – Copia `churn_features.parquet`, aplica ruido leve para simular la semana actual y guarda `current_snapshot.parquet`.
+2. **run_drift_report** – Ejecuta `DataDriftPreset`, guarda el HTML en `airflow/mlops/artifacts/drift_reports/` y lo sube a MinIO (`mlflow-artifacts/drift-reports/<fecha>.html`). Devuelve `{drift_detected, report_path, s3_key}`.
+3. **log_drift_result** – Informa si hubo drift y deja el path del reporte en logs.
 
-## Notes
-- Ensure `churn_training_dag` has run at least once so the drift reference history exists.
-- The Evidently HTML can be downloaded from the MinIO console (`http://localhost:9001/browser/mlflow-artifacts/drift-reports`).
-- Extend the DAG easily by adding notification hooks (email, Slack, etc.) reacting to the `drift_detected` flag.
+## Notas
+- Ejecutá `churn_training_dag` al menos una vez antes, así existe historial de referencia.
+- Los reportes se descargan desde `http://localhost:9001/browser/mlflow-artifacts/drift-reports`.
+- Fácil de extender con alertas (Slack/email) usando el flag `drift_detected`.
 
 ---
 
-## Operational Checklist
+## Checklist Operativo
 
-1. **Stack up** – `make reset` for a fresh environment or `make up` for reuse. Confirm all containers report `Up` via `docker compose … ps`.
-2. **Watchdog** – Run/verify `churn_data_watchdog` so dataset events emit. Without events, `churn_training_dag` will stay idle.
-3. **Churn training** – Follow the dataset-triggered run to completion; MLflow should show `roc_auc`, `recent_drift_share`, SHAP artifacts, and a new/updated `churn-model` version.
-4. **Crypto pipeline** – `make dag-run` (or let schedule run) and validate rejects/staging/prod tables plus GE Data Docs in MinIO.
-5. **Drift monitor** – Ensure `churn_drift_monitor_w` completes weekly (or trigger manually) so a fresh Evidently HTML lands in `mlflow-artifacts/drift-reports/`.
-6. **Dashboards** – Visit MLflow, MinIO, Streamlit, and pgAdmin to demonstrate outputs and allow reviewers to self-serve.
+1. **Levantar servicios** – `make reset` (entorno nuevo) o `make up` (entorno ya construido). Verificá `docker compose … ps`.
+2. **Watchdog** – Garantizá que `churn_data_watchdog` corra para emitir eventos de Dataset.
+3. **Entrenamiento churn** – Confirmá que el DAG dataset-triggered llegue hasta `promote_model`/`skip_promotion`. Revisá MLflow para validar métricas/artefactos.
+4. **Pipeline crypto** – `make dag-run` o dejá el schedule. Revisá staging, prod y la tabla de rechazos + Data Docs.
+5. **Monitoreo de drift** – Ejecutá o esperá a `churn_drift_monitor_w`; verificá que se genere el HTML en MinIO.
+6. **UIs** – Airflow para estado, MLflow para modelos, MinIO para artefactos, Streamlit para scoring, pgAdmin para consultas rápidas.
 
-## Useful References
+## Referencias útiles
 
-- **Architecture + churn deep dive**: [`airflow/dags/churn/CHURN_PLAYBOOK.md`](../airflow/dags/churn/CHURN_PLAYBOOK.md)
-- **Crypto DAG playbook**: [`airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`](../airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md)
-- **Top-level quickstart / credentials**: [`README.md`](../README.md#quickstart-happy-path)
-- **Make targets**: `Makefile`
-- **Airflow dataset metadata**: Postgres `dataset` and `dataset_event` tables (connect via `docker compose … exec postgres psql -U airflow -d crypto_db`)
+- **Arquitectura + detalles de churn**: [`airflow/dags/churn/CHURN_PLAYBOOK.md`](../airflow/dags/churn/CHURN_PLAYBOOK.md)
+- **Playbook de crypto**: [`airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`](../airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md)
+- **Quickstart / credenciales**: [`README.md`](../README.md#guía-rápida-happy-path)
+- **Targets de Makefile**: `Makefile`
+- **Metadata de Datasets**: tablas `dataset` y `dataset_event` en la DB de Airflow (`docker compose … exec postgres psql -U airflow -d crypto_db`)

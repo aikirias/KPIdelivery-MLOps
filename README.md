@@ -1,66 +1,66 @@
 # KPIdelivery-MLOps
 
-Repo organized by functional layers:
+Repositorio organizado por capas funcionales:
 
-- `infrastructure/`: Docker Compose stack + one Dockerfile per service (Airflow, Postgres, Redis, MinIO, pgAdmin, MLflow, Spark master/worker, JupyterLab, Streamlit).
-- `airflow/`: DAG packages (`crypto_events`, `churn`), scripts, and the Great Expectations context mounted inside the Airflow containers.
-- `airflow/mlops/`: source CSVs for the churn exercise + derived artifacts (ignored via `.gitignore`).
-- `database/`: SQL DDL/seed scripts consumed by Postgres bootstrap (crypto schemas + MLflow DB provisioning).
-- `docs/`: runbooks (`docs/README.md` for the stack, `docs/RUNBOOK.md` for DAG-level behavior). DAG-specific playbooks live alongside each DAG (`airflow/dags/churn/CHURN_PLAYBOOK.md`, `airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`).
-- `app/`: Streamlit UI that reads the latest Production model from MLflow for manual scoring.
-- `notebooks/`: mounted into the JupyterLab container for interactive exploration.
-- `Makefile`: convenience targets (`make init`, `make up`, `make down`, `make reset`, `make dag-run`, etc.) wrapping the Compose workflow.
+- `infrastructure/`: stack Docker Compose con un Dockerfile por servicio (Airflow, Postgres, Redis, MinIO, pgAdmin, MLflow, Spark master/worker, JupyterLab, Streamlit).
+- `airflow/`: paquetes de DAGs (`crypto_events`, `churn`), scripts y el contexto de Great Expectations montado dentro de los contenedores de Airflow.
+- `airflow/mlops/`: CSV de origen para el ejercicio de churn y los artefactos derivados (ignorados vía `.gitignore`).
+- `database/`: scripts SQL (DDL + seeds) que Postgres ejecuta al inicializar (esquemas de crypto + base de MLflow).
+- `docs/`: runbooks (`docs/README.md` describe todo el stack y `docs/RUNBOOK.md` detalla el funcionamiento de los DAGs). Cada DAG tiene además su propio playbook (`airflow/dags/churn/CHURN_PLAYBOOK.md`, `airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`).
+- `app/`: interfaz Streamlit que consume el último modelo en etapa *Production* desde MLflow para scoring manual.
+- `notebooks/`: montados en el contenedor de JupyterLab para experimentación interactiva.
+- `Makefile`: atajos (`make init`, `make up`, `make down`, `make reset`, `make dag-run`, etc.) sobre los comandos de Compose.
 
-## Quickstart (Happy Path)
+## Guía rápida (Happy Path)
 
-1. **Prereqs** – Docker Desktop (or engine) + Compose plugin, `make`, and ~10 GB free disk. No additional Python setup is required; everything runs in containers.
-2. **Clone & configure** – `git clone <repo>`; the repo already ships with `.env` (merged credentials for Airflow/MinIO/MLflow/Spark). Adjust ports/paths there if needed.
-3. **Cold start** – From repo root run `make reset`. This performs a full teardown, reinitializes Airflow metadata, recreates Postgres + MinIO volumes, and boots every service. Wait until `docker compose -f infrastructure/docker-compose.yml ps` shows `Up` for all containers (webserver, scheduler, worker, Spark, MLflow, Streamlit, MinIO, pgAdmin, Redis, Postgres, JupyterLab).
-4. **Log in** – Default credentials:
+1. **Prerequisitos** – Docker Desktop (o motor equivalente) + plugin de Compose, `make` y ~10 GB libres. No hace falta instalar dependencias de Python: todo corre en contenedores.
+2. **Clonar y configurar** – `git clone <repo>`. El repositorio ya incluye `.env` (credenciales compartidas para Airflow/MinIO/MLflow/Spark). Ajustá puertos/rutas ahí si lo necesitás.
+3. **Arranque en frío** – Desde la raíz ejecutá `make reset`. Esto derriba cualquier stack previo, reinicializa la metadata de Airflow, recrea los volúmenes de Postgres/MinIO y levanta todos los servicios. Esperá a que `docker compose -f infrastructure/docker-compose.yml ps` muestre `Up` para webserver, scheduler, worker, Spark, MLflow, Streamlit, MinIO, pgAdmin, Redis, Postgres y JupyterLab.
+4. **Accesos por defecto**
    - Airflow UI: `http://localhost:8080` (`admin` / `admin`)
    - pgAdmin: `http://localhost:8081` (`admin@local.test` / `admin`)
-   - MinIO Console: `http://localhost:9001` (`minio` / `minio123`)
-   - MLflow UI: `http://localhost:5000` (no auth)
+   - Consola MinIO: `http://localhost:9001` (`minio` / `minio123`)
+   - MLflow UI: `http://localhost:5000` (sin autenticación)
    - Streamlit: `http://localhost:8601`
    - JupyterLab: `http://localhost:8888` (token `mlops`)
-5. **First execution flow** (ten minutes end-to-end):
-   1. Trigger the watchdog DAG so Airflow registers dataset events for the churn inputs:
+5. **Primer flujo de ejecución** (≈10 minutos):
+   1. Lanzá el DAG watchdog para que Airflow registre eventos de Dataset sobre los CSV de churn:
       ```bash
       docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
         airflow dags trigger churn_data_watchdog
       ```
-      When this detects any change (or simply because it is the first run/output file missing), it emits Dataset events and `churn_training_dag` launches automatically. Follow its progress from the UI (`DAGs > churn_training_dag > Graph`).
-   2. Trigger the crypto pipeline once:
+      Al detectar cambios (o simplemente porque es la primera corrida), emite eventos y `churn_training_dag` se dispara automáticamente. Seguilo desde la UI (`DAGs > churn_training_dag > Graph`).
+   2. Ejecutá la tubería de crypto una vez:
       ```bash
       make dag-run
       ```
-      This runs `crypto_events_dag` manually for the latest 5‑day window using Faker-generated data.
-   3. The weekly drift DAG (`churn_drift_monitor_w`) runs on schedule as soon as the scheduler sees it; you can force a run with the UI or `airflow dags trigger churn_drift_monitor_w`.
-6. **Verify outputs**
-   - MLflow (`http://localhost:5000`) should now show at least one run in experiment `churn_retention` with metrics `roc_auc`, `recent_drift_share`, `recent_drift_detected`, and artifacts under `dataset/` + `explainability/`.
-   - MinIO bucket `mlflow-artifacts` contains drift reports (HTML) under `drift-reports/`.
-   - Streamlit displays the latest Production model along with SHAP plots once a model is promoted.
-   - Postgres schemas (`raw`, `staging`, `prod`, `dqm`) contain the crypto tables; `dqm.BT_CRYPTO_EVENTS_REJECTS` stores validation failures if any.
+      Corre `crypto_events_dag` manualmente para la ventana móvil de 5 días usando datos generados con Faker.
+   3. El DAG semanal de *drift* (`churn_drift_monitor_w`) queda programado; podés forzar una corrida desde la UI o con `airflow dags trigger churn_drift_monitor_w`.
+6. **Verificaciones**
+   - MLflow (`http://localhost:5000`) debería mostrar al menos un run en el experimento `churn_retention` con los métricos `roc_auc`, `recent_drift_share`, `recent_drift_detected` y artefactos bajo `dataset/` y `explainability/`.
+   - El bucket `mlflow-artifacts` en MinIO contiene los reportes de drift (HTML) dentro de `drift-reports/`.
+   - Streamlit pasa a consumir el modelo en Production y exhibe los gráficos/tabla de SHAP apenas exista una promoción exitosa.
+   - Las schemas `raw`, `staging`, `prod`, `dqm` en Postgres muestran las tablas de crypto; `dqm.BT_CRYPTO_EVENTS_REJECTS` guarda los registros rechazados por validaciones.
 
-That’s it—subsequent cycles usually only require `make up` (to start containers) and triggering whichever DAG you want to demo. Use `make reset` whenever you need a pristine environment.
+Luego del setup inicial, usualmente alcanza con `make up` para levantar servicios y disparar el DAG que quieras demostrar. Ejecutá `make reset` cuando necesites volver a un estado limpio.
 
-## Why two pipelines?
+## ¿Por qué dos pipelines?
 
-| Workflow | Purpose | Highlights |
+| Workflow | Propósito | Highlights |
 | --- | --- | --- |
-| `crypto_events_dag` | Validate-before-load pipeline for the crypto transaction history. | Great Expectations gating, quarantine table, transactional upsert into `prod.BT_CRYPTO_EVENTS`. |
-| `churn_training_dag` + `churn_drift_monitor_w` | End-to-end churn MLOps demo: data prep, Spark ML training, MLflow model registry integration, Streamlit UI, weekly drift report with Evidently. | Spark master/worker, MLflow tracking/registry on MinIO, JupyterLab for experiments, Streamlit app for manual scoring, Evidently report uploaded to `s3://mlflow-artifacts/drift-reports/`. |
+| `crypto_events_dag` | Pipeline *validate-before-load* para el historial de transacciones cripto. | Great Expectations como *gate*, tabla de cuarentena, *upsert* transaccional sobre `prod.BT_CRYPTO_EVENTS`. |
+| `churn_training_dag` + `churn_drift_monitor_w` | Demostración MLOps end-to-end de churn: limpieza, Spark ML, registro en MLflow, UI Streamlit y monitoreo de drift. | Spark master/worker, MLflow sobre MinIO, JupyterLab para notebooks, Streamlit para scoring manual, reportes Evidently en `s3://mlflow-artifacts/drift-reports/`. |
 
-The new services are exposed locally for quick access:
+Servicios expuestos localmente:
 
-| Service | URL / Notes |
+| Servicio | URL / Nota |
 | --- | --- |
-| Airflow UI | `http://localhost:8080` (`admin` / `admin`). |
-| pgAdmin | `http://localhost:8081` (`admin@local.test` / `admin`). |
-| MinIO Console | `http://localhost:9001` (`minio` / `minio123`). Buckets: `airflow-logs`, `ge-artifacts`, `mlflow-artifacts`. |
-| MLflow Tracking UI | `http://localhost:5000`. Uses Postgres `mlflow_db` + MinIO artifacts. |
-| JupyterLab | `http://localhost:8888` (token `mlops`). Mounts `notebooks/` and shares credentials to MLflow/MinIO. |
-| Spark Master UI | `http://localhost:8082`. Cluster reachable via `spark://spark-master:7077`. |
-| Streamlit | `http://localhost:8601`. UI for ad-hoc churn scoring using the Production model. |
+| Airflow UI | `http://localhost:8080` (`admin` / `admin`) |
+| pgAdmin | `http://localhost:8081` (`admin@local.test` / `admin`) |
+| MinIO Console | `http://localhost:9001` (`minio` / `minio123`) – buckets: `airflow-logs`, `ge-artifacts`, `mlflow-artifacts` |
+| MLflow Tracking UI | `http://localhost:5000` – usa Postgres `mlflow_db` + artefactos en MinIO |
+| JupyterLab | `http://localhost:8888` (token `mlops`) – monta `notebooks/` y exporta credenciales a MLflow/MinIO |
+| Spark Master UI | `http://localhost:8082` – clúster accesible en `spark://spark-master:7077` |
+| Streamlit | `http://localhost:8601` – UI para scoring ad-hoc con el modelo Production |
 
-Follow `docs/README.md` for full stack instructions and `docs/RUNBOOK.md` for DAG specifics (crypto + churn). The Makefile targets continue to be the easiest way to start/reset the entire environment.
+Consultá `docs/README.md` para instrucciones completas del stack y `docs/RUNBOOK.md` para detalles de los DAGs (crypto + churn). El `Makefile` sigue siendo la forma más rápida de iniciar, reiniciar o disparar pipelines.
