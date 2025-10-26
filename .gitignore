@@ -1,0 +1,20 @@
+# Python / Airflow artifacts
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Local Airflow runtime outputs
+airflow/logs/
+airflow/logs_old/
+airflow/ge/uncommitted/
+
+# Docker data volumes (if accidentally created)
+postgres_data/
+minio_data/
+
+# Environment / editor files
+.env
+.venv/
+.idea/
+.vscode/
