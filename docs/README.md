@@ -15,7 +15,12 @@ Reproducible Airflow + PostgreSQL + pgAdmin environment (Docker Compose) that in
 - GNU Make optional (commands shown directly with Compose).
 
 ## First Run
-Run commands from repo root pointing to the Compose file under `infrastructure/`:
+From repo root you can rely on the provided `Makefile` (recommended):
+```bash
+make init      # airflow db init + admin user
+make up        # start postgres, redis, minio, airflow, pgadmin
+```
+…or run the raw Compose commands if you prefer:
 ```bash
 docker compose -f infrastructure/docker-compose.yml up airflow-init
 docker compose -f infrastructure/docker-compose.yml up -d
@@ -58,12 +63,14 @@ docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
 
 ## Useful Commands
 - Tail scheduler logs: `docker compose -f infrastructure/docker-compose.yml logs -f airflow-scheduler`
-- Trigger DAG manually: `docker compose -f infrastructure/docker-compose.yml exec airflow-webserver airflow dags trigger crypto_events_dag`
+- Trigger DAG manually: `make dag-run` (or `docker compose ... airflow dags trigger crypto_events_dag`)
+- Inspect DAG run history: `make dag-status`
 - Inspect schemas: `docker compose -f infrastructure/docker-compose.yml exec postgres psql -U airflow -d crypto_db -c "\dn"`
-- Inspect remote logs / Data Docs: browse `http://localhost:9001` (MinIO console) and open the corresponding bucket/object.
+- Full reset (tear down, clear logs, re-up): `make reset`
+- Inspect MinIO artifacts: browse `http://localhost:9001` and open the `airflow-logs` / `ge-artifacts` buckets.
 
 ## Tear Down
 ```bash
 docker compose -f infrastructure/docker-compose.yml down -v
 ```
-This removes containers and volumes (including PostgreSQL data); rerun the init sequence to start fresh.
+or simply run `make destroy`. This removes containers and volumes (including PostgreSQL data); rerun the init sequence to start fresh.

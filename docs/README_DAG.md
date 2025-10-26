@@ -17,11 +17,10 @@ This document focuses on how the Airflow DAG works, how to operate it, and ways 
 Any Great Expectations failure stops the DAG before touching prod. The helper functions `capture_raw_rejects` / `capture_staging_rejects` compute and store the offending rows (site/user/date/crypto plus reason) for auditability.
 
 ## Running the DAG
-1. Start the stack (see main README) so Airflow, Postgres, and Redis are live.
+1. Start the stack (see main README) so Airflow, Postgres, Redis, MinIO, etc. are live (`make init && make up`).
 2. Enable `crypto_events_dag` in the Airflow UI. It has a daily schedule but you can trigger ad hoc:
    ```bash
-   docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
-     airflow dags trigger crypto_events_dag
+   make dag-run
    ```
 3. Track progress in the UI or stream logs:
    ```bash
@@ -44,4 +43,4 @@ Any Great Expectations failure stops the DAG before touching prod. The helper fu
 - **Prod merge**: Query `prod.BT_CRYPTO_EVENTS` to verify upserts and `is_active` toggling. For example, rows removed from staging in the last window should flip to `false`.
 
 ## Failure Recovery
-If either validation fails, fix the offending raw data (or adjust Faker settings), optionally delete quarantine records for clarity, and re-trigger the DAG. Because the merge step never ran, prod remains unchanged until both suites pass.
+If either validation fails, fix the offending raw data (or adjust Faker settings), optionally delete quarantine records for clarity, and re-trigger the DAG (`make dag-run`). Because the merge step never ran, prod remains unchanged until both suites pass.
