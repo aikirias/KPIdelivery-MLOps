@@ -1,262 +1,0 @@
-[2025-10-25T23:25:47.293+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: crypto_events_dag.ge_validate_raw manual__2025-10-25T23:25:34+00:00 [queued]>
-[2025-10-25T23:25:47.305+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: crypto_events_dag.ge_validate_raw manual__2025-10-25T23:25:34+00:00 [queued]>
-[2025-10-25T23:25:47.306+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 1
-[2025-10-25T23:25:47.324+0000] {taskinstance.py:1380} INFO - Executing <Task(PythonOperator): ge_validate_raw> on 2025-10-25 23:25:34+00:00
-[2025-10-25T23:25:47.337+0000] {standard_task_runner.py:57} INFO - Started process 149 to run task
-[2025-10-25T23:25:47.343+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'crypto_events_dag', 'ge_validate_raw', 'manual__2025-10-25T23:25:34+00:00', '--job-id', '22', '--raw', '--subdir', 'DAGS_FOLDER/crypto_events_dag.py', '--cfg-path', '/tmp/tmpt928tebv']
-[2025-10-25T23:25:47.345+0000] {standard_task_runner.py:85} INFO - Job 22: Subtask ge_validate_raw
-[2025-10-25T23:25:47.412+0000] {task_command.py:415} INFO - Running <TaskInstance: crypto_events_dag.ge_validate_raw manual__2025-10-25T23:25:34+00:00 [running]> on host f88ac614cc08
-[2025-10-25T23:25:47.513+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-eng' AIRFLOW_CTX_DAG_ID='crypto_events_dag' AIRFLOW_CTX_TASK_ID='ge_validate_raw' AIRFLOW_CTX_EXECUTION_DATE='2025-10-25T23:25:34+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-10-25T23:25:34+00:00'
-[2025-10-25T23:25:47.516+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/great_expectations/data_context/data_context/serializable_data_context.py:225: UserWarning: Warning. An existing `great_expectations.yml` was found here: /opt/***/gx.
-    - No action was taken.
-  warnings.warn(message)
-
-[2025-10-25T23:25:47.517+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/great_expectations/data_context/data_context/serializable_data_context.py:235: UserWarning: Warning. An existing `config_variables.yml` was found here: /opt/***/gx/uncommitted.
-    - No action was taken.
-  warnings.warn(message)
-
-[2025-10-25T23:25:47.550+0000] {file_data_context.py:222} INFO - FileDataContext loading fluent config
-[2025-10-25T23:25:47.553+0000] {config.py:185} INFO - Loading 'datasources' ->
-[]
-[2025-10-25T23:25:47.559+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:25:47.563+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:25:48.094+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:25:48.096+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:25:48.141+0000] {abstract_data_context.py:4422} INFO - Usage statistics is disabled; skipping initialization.
-[2025-10-25T23:25:48.185+0000] {validator.py:1461} INFO - 	10 expectation(s) included in expectation_suite.
-[2025-10-25T23:25:48.397+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/61 [00:00<?, ?it/s]
-[2025-10-25T23:25:48.397+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/61 [00:00<?, ?it/s]
-[2025-10-25T23:25:48.408+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   3%|3         | 2/61 [00:00<00:00, 180.27it/s]
-[2025-10-25T23:25:48.451+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   3%|3         | 2/61 [00:00<00:01, 37.08it/s] 
-[2025-10-25T23:25:48.457+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:00, 67.29it/s]
-[2025-10-25T23:25:48.499+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:01, 39.23it/s]
-[2025-10-25T23:25:48.499+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:01, 39.23it/s]
-[2025-10-25T23:25:48.505+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  25%|##4       | 15/61 [00:00<00:01, 39.23it/s]
-[2025-10-25T23:25:48.543+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  25%|##4       | 15/61 [00:00<00:01, 39.23it/s]
-[2025-10-25T23:25:48.580+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 39.23it/s]
-[2025-10-25T23:25:48.600+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 283.46it/s]
-[2025-10-25T23:25:48.600+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 283.46it/s]
-[2025-10-25T23:25:48.612+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 283.46it/s]
-[2025-10-25T23:25:48.629+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 283.46it/s]
-[2025-10-25T23:25:48.629+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 283.46it/s]
-[2025-10-25T23:25:48.630+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 261.89it/s]
-[2025-10-25T23:25:47.950+0000] {validator.py:1461} INFO - 	7 expectation(s) included in expectation_suite.
-[2025-10-25T23:25:48.090+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/42 [00:00<?, ?it/s]
-[2025-10-25T23:25:48.091+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/42 [00:00<?, ?it/s]
-[2025-10-25T23:25:48.099+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   5%|4         | 2/42 [00:00<00:00, 234.98it/s]
-[2025-10-25T23:25:48.127+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   5%|4         | 2/42 [00:00<00:00, 55.49it/s] 
-[2025-10-25T23:25:48.131+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  10%|9         | 4/42 [00:00<00:00, 99.37it/s]
-[2025-10-25T23:25:48.160+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  10%|9         | 4/42 [00:00<00:00, 57.79it/s]
-[2025-10-25T23:25:48.168+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  29%|##8       | 12/42 [00:00<00:00, 155.54it/s]
-[2025-10-25T23:25:48.194+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  29%|##8       | 12/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.195+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  29%|##8       | 12/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.219+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  79%|#######8  | 33/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.232+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  79%|#######8  | 33/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.251+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.261+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.262+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 116.39it/s]
-[2025-10-25T23:25:48.262+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 245.58it/s]
-[2025-10-25T23:25:49.532+0000] {validator.py:1461} INFO - 	10 expectation(s) included in expectation_suite.
-[2025-10-25T23:25:49.742+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/61 [00:00<?, ?it/s]
-[2025-10-25T23:25:49.742+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/61 [00:00<?, ?it/s]
-[2025-10-25T23:25:49.749+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   3%|3         | 2/61 [00:00<00:00, 314.83it/s]
-[2025-10-25T23:25:49.797+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   3%|3         | 2/61 [00:00<00:01, 36.77it/s] 
-[2025-10-25T23:25:49.801+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:00, 67.93it/s]
-[2025-10-25T23:25:49.847+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:01, 38.28it/s]
-[2025-10-25T23:25:49.848+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:01, 38.28it/s]
-[2025-10-25T23:25:49.855+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  25%|##4       | 15/61 [00:00<00:01, 38.28it/s]
-[2025-10-25T23:25:49.890+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  25%|##4       | 15/61 [00:00<00:01, 38.28it/s]
-[2025-10-25T23:25:49.923+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 38.28it/s]
-[2025-10-25T23:25:49.944+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 38.28it/s]
-[2025-10-25T23:25:49.956+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 328.43it/s]
-[2025-10-25T23:25:49.956+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 328.43it/s]
-[2025-10-25T23:25:49.972+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 328.43it/s]
-[2025-10-25T23:25:49.972+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 328.43it/s]
-[2025-10-25T23:25:49.972+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 265.02it/s]
-[2025-10-25T23:25:51.623+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.631+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.dq_runs (suite_name, status, details)
-        VALUES (%(suite)s, %(status)s, %(details)s::jsonb)
-        , parameters: {'suite': 'suite_raw_history', 'status': 'failed', 'details': '"{\\n  \\"run_id\\": {\\n    \\"run_name\\": \\"suite_raw_history_20251025232548\\",\\n    \\"run_time\\": \\"2025-10-25T23:25:48.170592+00:00\\"\\n  },\\n  \\"run_results\\": {\\n    \\"ValidationResultIdentifier::suite_raw_history/suite_raw_history_20251025232548/20251025T232548.170592Z/80116e3ccffeb39462bf87670aa03427\\": {\\n      \\"validation_result\\": {\\n        \\"success\\": true,\\n        \\"results\\": [\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_table_columns_to_match_set\\",\\n              \\"kwargs\\": {\\n                \\"column_set\\": [\\n                  \\"site_id\\",\\n                  \\"user_id\\",\\n                  \\"purchase_date\\",\\n                  \\"crypto_type\\",\\n                  \\"purchase_price\\",\\n                  \\"purchase_units\\",\\n                  \\"inserted_at\\"\\n                ],\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"observed_value\\": [\\n                \\"site_id\\",\\n                \\"user_id\\",\\n                \\"purchase_date\\",\\n                \\"crypto_type\\",\\n                \\"purchase_price\\",\\n                \\"purchase_units\\",\\n                \\"inserted_at\\"\\n              ]\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_not_be_null\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"site_id\\",\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_in_set\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"site_id\\",\\n                \\"value_set\\": [\\n                  \\"ARGENTINA\\",\\n                  \\"BRASIL\\",\\n                  \\"MEXICO\\"\\n                ],\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_not_be_null\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"user_id\\",\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_of_type\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"user_id\\",\\n                \\"type_\\": \\"BIGINT\\",\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"observed_value\\": \\"BIGINT\\"\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_not_be_null\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_date\\",\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_match_regex\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_date\\",\\n                \\"regex\\": \\"^([0-2]?\\\\\\\\d|3[01])/(0?\\\\\\\\d|1[0-2])/20\\\\\\\\d{2}$\\",\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_in_set\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"crypto_type\\",\\n                \\"value_set\\": [\\n                  \\"BTC\\",\\n                  \\"ETH\\",\\n                  \\"USDC\\"\\n                ],\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_between\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_price\\",\\n                \\"min_value\\": 0,\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_between\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_units\\",\\n                \\"min_value\\": 0,\\n                \\"strict_min\\": true,\\n                \\"batch_id\\": \\"80116e3ccffeb39462bf87670aa03427\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 32,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          }\\n        ],\\n        \\"evaluation_parameters\\": {},\\n        \\"statistics\\": {\\n          \\"evaluated_expectations\\": 10,\\n          \\"successful_expectations\\": 10,\\n          \\"unsuccessful_expectations\\": 0,\\n          \\"success_percent\\": 100.0\\n        },\\n        \\"meta\\": {\\n          \\"great_expectations_version\\": \\"0.18.12\\",\\n          \\"expectation_suite_name\\": \\"suite_raw_history\\",\\n          \\"run_id\\": {\\n            \\"run_name\\": \\"suite_raw_history_20251025232548\\",\\n            \\"run_time\\": \\"2025-10-25T23:25:48.170592+00:00\\"\\n          },\\n          \\"batch_spec\\": {\\n            \\"data_asset_name\\": \\"raw_history_last5\\",\\n            \\"query\\": \\"\\\\n            SELECT site_id,\\\\n                   user_id,\\\\n                   purchase_date,\\\\n                   crypto_type,\\\\n                   purchase_price,\\\\n                   purchase_units,\\\\n                   inserted_at\\\\n            FROM raw.bt_crypto_transaction_history\\\\n            WHERE inserted_at >= now() - INTERVAL \'5 days\'\\\\n        \\",\\n            \\"temp_table_schema_name\\": null\\n          },\\n          \\"batch_markers\\": {\\n            \\"ge_load_time\\": \\"20251025T232549.523426Z\\"\\n          },\\n          \\"active_batch_definition\\": {\\n            \\"datasource_name\\": \\"crypto_postgres\\",\\n            \\"data_connector_name\\": \\"default_runtime_data_connector_name\\",\\n            \\"data_asset_name\\": \\"raw_history_last5\\",\\n            \\"batch_identifiers\\": {\\n              \\"default_identifier_name\\": \\"raw_history_window\\"\\n            }\\n          },\\n          \\"validation_time\\": \\"20251025T232549.531569Z\\",\\n          \\"checkpoint_name\\": \\"crypto_checkpoint\\",\\n          \\"validation_id\\": null,\\n          \\"checkpoint_id\\": null\\n        }\\n      },\\n      \\"actions_results\\": {\\n        \\"store_validation_result\\": {\\n          \\"class\\": \\"StoreValidationResultAction\\"\\n        },\\n        \\"store_evaluation_params\\": {\\n          \\"class\\": \\"StoreEvaluationParametersAction\\"\\n        },\\n        \\"update_data_docs\\": {\\n          \\"s3_site\\": \\"http://minio:9000/ge-artifacts/data_docs/validations/suite_raw_history/suite_raw_history_20251025232548/20251025T232548.170592Z/80116e3ccffeb39462bf87670aa03427.html\\",\\n          \\"class\\": \\"UpdateDataDocsAction\\"\\n        }\\n      }\\n    },\\n    \\"ValidationResultIdentifier::suite_staging_candidate/suite_raw_history_20251025232548/20251025T232548.170592Z/16f3ab2d93baea05fa2a5b3d1c0fc481\\": {\\n      \\"validation_result\\": {\\n        \\"success\\": false,\\n        \\"results\\": [\\n          {\\n            \\"success\\": false,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_table_columns_to_match_set\\",\\n              \\"kwargs\\": {\\n                \\"column_set\\": [\\n                  \\"site_id\\",\\n                  \\"user_id\\",\\n                  \\"purchase_date\\",\\n                  \\"crypto_type\\",\\n                  \\"purchase_price\\",\\n                  \\"purchase_units\\",\\n                  \\"purchase_value\\",\\n                  \\"staged_at\\"\\n                ],\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"observed_value\\": [\\n                \\"crypto_type\\",\\n                \\"purchase_date\\",\\n                \\"purchase_price\\",\\n                \\"purchase_units\\",\\n                \\"purchase_value\\",\\n                \\"purchase_value_calc\\",\\n                \\"site_id\\",\\n                \\"staged_at\\",\\n                \\"user_id\\"\\n              ],\\n              \\"details\\": {\\n                \\"mismatched\\": {\\n                  \\"unexpected\\": [\\n                    \\"purchase_value_calc\\"\\n                  ]\\n                }\\n              }\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_compound_columns_to_be_unique\\",\\n              \\"kwargs\\": {\\n                \\"column_list\\": [\\n                  \\"site_id\\",\\n                  \\"user_id\\",\\n                  \\"purchase_date\\",\\n                  \\"crypto_type\\"\\n                ],\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 20,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_pair_values_to_be_equal\\",\\n              \\"kwargs\\": {\\n                \\"column_A\\": \\"purchase_value\\",\\n                \\"column_B\\": \\"purchase_value_calc\\",\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 20,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_of_type\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_date\\",\\n                \\"type_\\": \\"DATE\\",\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"observed_value\\": \\"DATE\\"\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_between\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_price\\",\\n                \\"min_value\\": 0,\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 20,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_between\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_units\\",\\n                \\"min_value\\": 0,\\n                \\"strict_min\\": true,\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 20,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          },\\n          {\\n            \\"success\\": true,\\n            \\"expectation_config\\": {\\n              \\"expectation_type\\": \\"expect_column_values_to_be_between\\",\\n              \\"kwargs\\": {\\n                \\"column\\": \\"purchase_value\\",\\n                \\"min_value\\": 0,\\n                \\"strict_min\\": true,\\n                \\"batch_id\\": \\"16f3ab2d93baea05fa2a5b3d1c0fc481\\"\\n              },\\n              \\"meta\\": {}\\n            },\\n            \\"result\\": {\\n              \\"element_count\\": 20,\\n              \\"unexpected_count\\": 0,\\n              \\"unexpected_percent\\": 0.0,\\n              \\"partial_unexpected_list\\": [],\\n              \\"missing_count\\": 0,\\n              \\"missing_percent\\": 0.0,\\n              \\"unexpected_percent_total\\": 0.0,\\n              \\"unexpected_percent_nonmissing\\": 0.0,\\n              \\"partial_unexpected_counts\\": []\\n            },\\n            \\"meta\\": {},\\n            \\"exception_info\\": {\\n              \\"raised_exception\\": false,\\n              \\"exception_traceback\\": null,\\n              \\"exception_message\\": null\\n            }\\n          }\\n        ],\\n        \\"evaluation_parameters\\": {},\\n        \\"statistics\\": {\\n          \\"evaluated_expectations\\": 7,\\n          \\"successful_expectations\\": 6,\\n          \\"unsuccessful_expectations\\": 1,\\n          \\"success_percent\\": 85.71428571428571\\n        },\\n        \\"meta\\": {\\n          \\"great_expectations_version\\": \\"0.18.12\\",\\n          \\"expectation_suite_name\\": \\"suite_staging_candidate\\",\\n          \\"run_id\\": {\\n            \\"run_name\\": \\"suite_raw_history_20251025232548\\",\\n            \\"run_time\\": \\"2025-10-25T23:25:48.170592+00:00\\"\\n          },\\n          \\"batch_spec\\": {\\n            \\"data_asset_name\\": \\"staging_candidate_last5\\",\\n            \\"query\\": \\"SELECT site_id,\\\\n       user_id,\\\\n       purchase_date,\\\\n       crypto_type,\\\\n       purchase_price,\\\\n       purchase_units,\\\\n       purchase_value,\\\\n       ROUND(purchase_price * purchase_units, 8) AS purchase_value_calc,\\\\n       staged_at\\\\nFROM staging.bt_crypto_events_candidate\\\\nWHERE purchase_date BETWEEN CURRENT_DATE - INTERVAL \'4 day\' AND CURRENT_DATE\\\\n\\",\\n            \\"temp_table_schema_name\\": null\\n          },\\n          \\"batch_markers\\": {\\n            \\"ge_load_time\\": \\"20251025T232547.942088Z\\"\\n          },\\n          \\"active_batch_definition\\": {\\n            \\"datasource_name\\": \\"crypto_postgres\\",\\n            \\"data_connector_name\\": \\"default_runtime_data_connector_name\\",\\n            \\"data_asset_name\\": \\"staging_candidate_last5\\",\\n            \\"batch_identifiers\\": {\\n              \\"default_identifier_name\\": \\"staging_candidate_window\\"\\n            }\\n          },\\n          \\"validation_time\\": \\"20251025T232547.949548Z\\",\\n          \\"checkpoint_name\\": \\"crypto_checkpoint\\",\\n          \\"validation_id\\": null,\\n          \\"checkpoint_id\\": null\\n        }\\n      },\\n      \\"actions_results\\": {\\n        \\"store_validation_result\\": {\\n          \\"class\\": \\"StoreValidationResultAction\\"\\n        },\\n        \\"store_evaluation_params\\": {\\n          \\"class\\": \\"StoreEvaluationParametersAction\\"\\n        },\\n        \\"update_data_docs\\": {\\n          \\"s3_site\\": \\"http://minio:9000/ge-artifacts/data_docs/validations/suite_staging_candidate/suite_raw_history_20251025232548/20251025T232548.170592Z/16f3ab2d93baea05fa2a5b3d1c0fc481.html\\",\\n          \\"class\\": \\"UpdateDataDocsAction\\"\\n        }\\n      }\\n    }\\n  },\\n  \\"checkpoint_config\\": {\\n    \\"run_name_template\\": \\"%Y%m%d_%H%M%S_crypto\\",\\n    \\"expectation_suite_ge_cloud_id\\": null,\\n    \\"config_version\\": 1.0,\\n    \\"evaluation_parameters\\": {},\\n    \\"notify_with\\": null,\\n    \\"ge_cloud_id\\": null,\\n    \\"template_name\\": null,\\n    \\"batch_request\\": {},\\n    \\"notify_on\\": null,\\n    \\"expectation_suite_name\\": null,\\n    \\"action_list\\": [\\n      {\\n        \\"name\\": \\"store_validation_result\\",\\n        \\"action\\": {\\n          \\"class_name\\": \\"StoreValidationResultAction\\"\\n        }\\n      },\\n      {\\n        \\"name\\": \\"store_evaluation_params\\",\\n        \\"action\\": {\\n          \\"class_name\\": \\"StoreEvaluationParametersAction\\"\\n        }\\n      },\\n      {\\n        \\"name\\": \\"update_data_docs\\",\\n        \\"action\\": {\\n          \\"class_name\\": \\"UpdateDataDocsAction\\"\\n        }\\n      }\\n    ],\\n    \\"runtime_configuration\\": {},\\n    \\"slack_webhook\\": null,\\n    \\"site_names\\": null,\\n    \\"validations\\": [\\n      {\\n        \\"name\\": null,\\n        \\"expectation_suite_ge_cloud_id\\": null,\\n        \\"id\\": null,\\n        \\"batch_request\\": {\\n          \\"datasource_name\\": \\"crypto_postgres\\",\\n          \\"data_connector_name\\": \\"default_runtime_data_connector_name\\",\\n          \\"data_asset_name\\": \\"raw_history_last5\\",\\n          \\"runtime_parameters\\": {\\n            \\"query\\": \\"SELECT site_id,\\\\n       user_id,\\\\n       purchase_date,\\\\n       crypto_type,\\\\n       purchase_price,\\\\n       purchase_units,\\\\n       inserted_at\\\\nFROM raw.bt_crypto_transaction_history\\\\nWHERE inserted_at >= now() - INTERVAL \'5 days\'\\\\n\\"\\n          },\\n          \\"batch_identifiers\\": {\\n            \\"default_identifier_name\\": \\"raw_history_window\\"\\n          }\\n        },\\n        \\"expectation_suite_name\\": \\"suite_raw_history\\"\\n      },\\n      {\\n        \\"name\\": null,\\n        \\"expectation_suite_ge_cloud_id\\": null,\\n        \\"id\\": null,\\n        \\"batch_request\\": {\\n          \\"datasource_name\\": \\"crypto_postgres\\",\\n          \\"data_connector_name\\": \\"default_runtime_data_connector_name\\",\\n          \\"data_asset_name\\": \\"staging_candidate_last5\\",\\n          \\"runtime_parameters\\": {\\n            \\"query\\": \\"SELECT site_id,\\\\n       user_id,\\\\n       purchase_date,\\\\n       crypto_type,\\\\n       purchase_price,\\\\n       purchase_units,\\\\n       purchase_value,\\\\n       ROUND(purchase_price * purchase_units, 8) AS purchase_value_calc,\\\\n       staged_at\\\\nFROM staging.bt_crypto_events_candidate\\\\nWHERE purchase_date BETWEEN CURRENT_DATE - INTERVAL \'4 day\' AND CURRENT_DATE\\\\n\\"\\n          },\\n          \\"batch_identifiers\\": {\\n            \\"default_identifier_name\\": \\"staging_candidate_window\\"\\n          }\\n        },\\n        \\"expectation_suite_name\\": \\"suite_staging_candidate\\"\\n      }\\n    ],\\n    \\"profilers\\": [],\\n    \\"name\\": \\"crypto_checkpoint\\",\\n    \\"class_name\\": \\"Checkpoint\\",\\n    \\"module_name\\": \\"great_expectations.checkpoint\\",\\n    \\"default_validation_id\\": null\\n  },\\n  \\"success\\": false\\n}"'}
-[2025-10-25T23:25:51.634+0000] {sql.py:427} INFO - Rows affected: 1
-[2025-10-25T23:25:51.638+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.649+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.bt_crypto_events_rejects (
-            suite_name, site_id, user_id, purchase_date_raw, crypto_type,
-            purchase_price, purchase_units, reason
-        )
-        SELECT %(suite)s,
-               site_id,
-               user_id,
-               purchase_date_raw,
-               crypto_type,
-               purchase_price,
-               purchase_units,
-               %(reason)s
-        FROM (
-            
-        SELECT site_id,
-               user_id::text AS user_id,
-               purchase_date AS purchase_date_raw,
-               crypto_type,
-               purchase_price::text AS purchase_price,
-               purchase_units::text AS purchase_units
-        FROM raw.bt_crypto_transaction_history
-        WHERE inserted_at >= now() - INTERVAL '5 days'
-     AND site_id NOT IN ('ARGENTINA','BRASIL','MEXICO')
-        ) q
-        , parameters: {'suite': 'suite_raw_history', 'reason': 'invalid_site_id'}
-[2025-10-25T23:25:51.651+0000] {sql.py:427} INFO - Rows affected: 0
-[2025-10-25T23:25:51.653+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.660+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.bt_crypto_events_rejects (
-            suite_name, site_id, user_id, purchase_date_raw, crypto_type,
-            purchase_price, purchase_units, reason
-        )
-        SELECT %(suite)s,
-               site_id,
-               user_id,
-               purchase_date_raw,
-               crypto_type,
-               purchase_price,
-               purchase_units,
-               %(reason)s
-        FROM (
-            
-        SELECT site_id,
-               user_id::text AS user_id,
-               purchase_date AS purchase_date_raw,
-               crypto_type,
-               purchase_price::text AS purchase_price,
-               purchase_units::text AS purchase_units
-        FROM raw.bt_crypto_transaction_history
-        WHERE inserted_at >= now() - INTERVAL '5 days'
-     AND user_id IS NULL
-        ) q
-        , parameters: {'suite': 'suite_raw_history', 'reason': 'missing_user_id'}
-[2025-10-25T23:25:51.662+0000] {sql.py:427} INFO - Rows affected: 0
-[2025-10-25T23:25:51.663+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.669+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.bt_crypto_events_rejects (
-            suite_name, site_id, user_id, purchase_date_raw, crypto_type,
-            purchase_price, purchase_units, reason
-        )
-        SELECT %(suite)s,
-               site_id,
-               user_id,
-               purchase_date_raw,
-               crypto_type,
-               purchase_price,
-               purchase_units,
-               %(reason)s
-        FROM (
-            
-        SELECT site_id,
-               user_id::text AS user_id,
-               purchase_date AS purchase_date_raw,
-               crypto_type,
-               purchase_price::text AS purchase_price,
-               purchase_units::text AS purchase_units
-        FROM raw.bt_crypto_transaction_history
-        WHERE inserted_at >= now() - INTERVAL '5 days'
-     AND (purchase_date IS NULL OR purchase_date !~ %(regex)s)
-        ) q
-        , parameters: {'suite': 'suite_raw_history', 'reason': 'invalid_purchase_date', 'regex': '^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/20[0-9]{2}$'}
-[2025-10-25T23:25:51.671+0000] {sql.py:427} INFO - Rows affected: 0
-[2025-10-25T23:25:51.672+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.679+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.bt_crypto_events_rejects (
-            suite_name, site_id, user_id, purchase_date_raw, crypto_type,
-            purchase_price, purchase_units, reason
-        )
-        SELECT %(suite)s,
-               site_id,
-               user_id,
-               purchase_date_raw,
-               crypto_type,
-               purchase_price,
-               purchase_units,
-               %(reason)s
-        FROM (
-            
-        SELECT site_id,
-               user_id::text AS user_id,
-               purchase_date AS purchase_date_raw,
-               crypto_type,
-               purchase_price::text AS purchase_price,
-               purchase_units::text AS purchase_units
-        FROM raw.bt_crypto_transaction_history
-        WHERE inserted_at >= now() - INTERVAL '5 days'
-     AND crypto_type NOT IN ('BTC','ETH','USDC')
-        ) q
-        , parameters: {'suite': 'suite_raw_history', 'reason': 'invalid_crypto_type'}
-[2025-10-25T23:25:51.681+0000] {sql.py:427} INFO - Rows affected: 0
-[2025-10-25T23:25:51.683+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.689+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.bt_crypto_events_rejects (
-            suite_name, site_id, user_id, purchase_date_raw, crypto_type,
-            purchase_price, purchase_units, reason
-        )
-        SELECT %(suite)s,
-               site_id,
-               user_id,
-               purchase_date_raw,
-               crypto_type,
-               purchase_price,
-               purchase_units,
-               %(reason)s
-        FROM (
-            
-        SELECT site_id,
-               user_id::text AS user_id,
-               purchase_date AS purchase_date_raw,
-               crypto_type,
-               purchase_price::text AS purchase_price,
-               purchase_units::text AS purchase_units
-        FROM raw.bt_crypto_transaction_history
-        WHERE inserted_at >= now() - INTERVAL '5 days'
-     AND purchase_price < 0
-        ) q
-        , parameters: {'suite': 'suite_raw_history', 'reason': 'negative_purchase_price'}
-[2025-10-25T23:25:51.690+0000] {sql.py:427} INFO - Rows affected: 0
-[2025-10-25T23:25:51.692+0000] {base.py:73} INFO - Using connection ID 'crypto_postgres' for task execution.
-[2025-10-25T23:25:51.698+0000] {sql.py:418} INFO - Running statement: 
-        INSERT INTO dqm.bt_crypto_events_rejects (
-            suite_name, site_id, user_id, purchase_date_raw, crypto_type,
-            purchase_price, purchase_units, reason
-        )
-        SELECT %(suite)s,
-               site_id,
-               user_id,
-               purchase_date_raw,
-               crypto_type,
-               purchase_price,
-               purchase_units,
-               %(reason)s
-        FROM (
-            
-        SELECT site_id,
-               user_id::text AS user_id,
-               purchase_date AS purchase_date_raw,
-               crypto_type,
-               purchase_price::text AS purchase_price,
-               purchase_units::text AS purchase_units
-        FROM raw.bt_crypto_transaction_history
-        WHERE inserted_at >= now() - INTERVAL '5 days'
-     AND purchase_units <= 0
-        ) q
-        , parameters: {'suite': 'suite_raw_history', 'reason': 'non_positive_units'}
-[2025-10-25T23:25:51.700+0000] {sql.py:427} INFO - Rows affected: 0
-[2025-10-25T23:25:51.713+0000] {taskinstance.py:1935} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
-    return_value = self.execute_callable()
-  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
-    return self.python_callable(*self.op_args, **self.op_kwargs)
-  File "/opt/airflow/dags/crypto_events_dag.py", line 266, in run_ge_validation
-    raise AirflowException(f"Great Expectations validation failed for {suite_name}")
-airflow.exceptions.AirflowException: Great Expectations validation failed for suite_raw_history
-[2025-10-25T23:25:51.717+0000] {taskinstance.py:1398} INFO - Marking task as FAILED. dag_id=crypto_events_dag, task_id=ge_validate_raw, execution_date=20251025T232534, start_date=20251025T232547, end_date=20251025T232551
-[2025-10-25T23:25:51.732+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 22 for task ge_validate_raw (Great Expectations validation failed for suite_raw_history; 149)
-[2025-10-25T23:25:52.225+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
-[2025-10-25T23:25:52.256+0000] {taskinstance.py:2776} INFO - 0 downstream tasks scheduled from follow-on schedule check

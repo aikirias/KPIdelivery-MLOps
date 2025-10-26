@@ -1,91 +1,0 @@
-[2025-10-25T23:23:17.176+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: crypto_events_dag.ge_validate_raw manual__2025-10-25T23:20:40+00:00 [queued]>
-[2025-10-25T23:23:17.184+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: crypto_events_dag.ge_validate_raw manual__2025-10-25T23:20:40+00:00 [queued]>
-[2025-10-25T23:23:17.184+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 1
-[2025-10-25T23:23:17.198+0000] {taskinstance.py:1380} INFO - Executing <Task(PythonOperator): ge_validate_raw> on 2025-10-25 23:20:40+00:00
-[2025-10-25T23:23:17.209+0000] {standard_task_runner.py:57} INFO - Started process 150 to run task
-[2025-10-25T23:23:17.212+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'crypto_events_dag', 'ge_validate_raw', 'manual__2025-10-25T23:20:40+00:00', '--job-id', '18', '--raw', '--subdir', 'DAGS_FOLDER/crypto_events_dag.py', '--cfg-path', '/tmp/tmpiz22zcxs']
-[2025-10-25T23:23:17.213+0000] {standard_task_runner.py:85} INFO - Job 18: Subtask ge_validate_raw
-[2025-10-25T23:23:17.259+0000] {task_command.py:415} INFO - Running <TaskInstance: crypto_events_dag.ge_validate_raw manual__2025-10-25T23:20:40+00:00 [running]> on host f88ac614cc08
-[2025-10-25T23:23:17.335+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-eng' AIRFLOW_CTX_DAG_ID='crypto_events_dag' AIRFLOW_CTX_TASK_ID='ge_validate_raw' AIRFLOW_CTX_EXECUTION_DATE='2025-10-25T23:20:40+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-10-25T23:20:40+00:00'
-[2025-10-25T23:23:17.337+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/great_expectations/data_context/data_context/serializable_data_context.py:225: UserWarning: Warning. An existing `great_expectations.yml` was found here: /opt/***/gx.
-    - No action was taken.
-  warnings.warn(message)
-
-[2025-10-25T23:23:17.338+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/great_expectations/data_context/data_context/serializable_data_context.py:235: UserWarning: Warning. An existing `config_variables.yml` was found here: /opt/***/gx/uncommitted.
-    - No action was taken.
-  warnings.warn(message)
-
-[2025-10-25T23:23:17.365+0000] {file_data_context.py:222} INFO - FileDataContext loading fluent config
-[2025-10-25T23:23:17.367+0000] {config.py:185} INFO - Loading 'datasources' ->
-[]
-[2025-10-25T23:23:17.375+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:23:17.378+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:23:17.807+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:23:17.809+0000] {abstract_data_context.py:1236} INFO - Profiler store is not configured; omitting it from active stores
-[2025-10-25T23:23:17.853+0000] {abstract_data_context.py:4422} INFO - Usage statistics is disabled; skipping initialization.
-[2025-10-25T23:23:17.895+0000] {validator.py:1461} INFO - 	10 expectation(s) included in expectation_suite.
-[2025-10-25T23:23:18.116+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/61 [00:00<?, ?it/s]
-[2025-10-25T23:23:18.117+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/61 [00:00<?, ?it/s]
-[2025-10-25T23:23:18.125+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   3%|3         | 2/61 [00:00<00:00, 246.26it/s]
-[2025-10-25T23:23:18.166+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   3%|3         | 2/61 [00:00<00:01, 40.43it/s] 
-[2025-10-25T23:23:18.172+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:00, 73.20it/s]
-[2025-10-25T23:23:18.218+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:01, 39.63it/s]
-[2025-10-25T23:23:18.220+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   7%|6         | 4/61 [00:00<00:01, 39.63it/s]
-[2025-10-25T23:23:18.226+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  25%|##4       | 15/61 [00:00<00:01, 39.63it/s]
-[2025-10-25T23:23:18.263+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  25%|##4       | 15/61 [00:00<00:01, 39.63it/s]
-[2025-10-25T23:23:18.300+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 39.63it/s]
-[2025-10-25T23:23:18.319+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 283.47it/s]
-[2025-10-25T23:23:18.320+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  82%|########1 | 50/61 [00:00<00:00, 283.47it/s]
-[2025-10-25T23:23:18.332+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 283.47it/s]
-[2025-10-25T23:23:18.347+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 283.47it/s]
-[2025-10-25T23:23:18.347+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 283.47it/s]
-[2025-10-25T23:23:18.347+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 61/61 [00:00<00:00, 264.85it/s]
-[2025-10-25T23:23:19.618+0000] {validator.py:1461} INFO - 	7 expectation(s) included in expectation_suite.
-[2025-10-25T23:23:19.749+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/42 [00:00<?, ?it/s]
-[2025-10-25T23:23:19.749+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   0%|          | 0/42 [00:00<?, ?it/s]
-[2025-10-25T23:23:19.755+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   5%|4         | 2/42 [00:00<00:00, 364.26it/s]
-[2025-10-25T23:23:19.784+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:   5%|4         | 2/42 [00:00<00:00, 58.50it/s] 
-[2025-10-25T23:23:19.786+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  10%|9         | 4/42 [00:00<00:00, 108.41it/s]
-[2025-10-25T23:23:19.815+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  10%|9         | 4/42 [00:00<00:00, 61.01it/s] 
-[2025-10-25T23:23:19.821+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  29%|##8       | 12/42 [00:00<00:00, 167.17it/s]
-[2025-10-25T23:23:19.845+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  29%|##8       | 12/42 [00:00<00:00, 125.31it/s]
-[2025-10-25T23:23:19.870+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  79%|#######8  | 33/42 [00:00<00:00, 273.40it/s]
-[2025-10-25T23:23:19.871+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  79%|#######8  | 33/42 [00:00<00:00, 273.40it/s]
-[2025-10-25T23:23:19.883+0000] {logging_mixin.py:151} WARNING - Calculating Metrics:  79%|#######8  | 33/42 [00:00<00:00, 273.40it/s]
-[2025-10-25T23:23:19.902+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 273.40it/s]
-[2025-10-25T23:23:19.911+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 273.40it/s]
-[2025-10-25T23:23:19.912+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 273.40it/s]
-[2025-10-25T23:23:19.912+0000] {logging_mixin.py:151} WARNING - Calculating Metrics: 100%|##########| 42/42 [00:00<00:00, 258.54it/s]
-[2025-10-25T23:23:21.085+0000] {taskinstance.py:1935} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
-    return_value = self.execute_callable()
-  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
-    return self.python_callable(*self.op_args, **self.op_kwargs)
-  File "/opt/airflow/dags/crypto_events_dag.py", line 244, in run_ge_validation
-    result = context.run_checkpoint(
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/core/usage_statistics/usage_statistics.py", line 266, in usage_statistics_wrapped_method
-    result = func(*args, **kwargs)
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2107, in run_checkpoint
-    return self._run_checkpoint(
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 2151, in _run_checkpoint
-    result: CheckpointResult = checkpoint.run_with_runtime_args(
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/checkpoint/checkpoint.py", line 914, in run_with_runtime_args
-    return self.run(**checkpoint_run_arguments)
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/core/usage_statistics/usage_statistics.py", line 266, in usage_statistics_wrapped_method
-    result = func(*args, **kwargs)
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/checkpoint/checkpoint.py", line 305, in run
-    self._run_validation(
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/checkpoint/checkpoint.py", line 454, in _run_validation
-    substituted_validation_dict: dict = get_substituted_validation_dict(
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/checkpoint/util.py", line 193, in get_substituted_validation_dict
-    "batch_request": get_substituted_batch_request(
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/checkpoint/util.py", line 268, in get_substituted_batch_request
-    return materialize_batch_request(batch_request=effective_batch_request)  # type: ignore[return-value] # see materialize_batch_request
-  File "/home/airflow/.local/lib/python3.8/site-packages/great_expectations/core/batch.py", line 942, in materialize_batch_request
-    return batch_request_class(**effective_batch_request)
-TypeError: __init__() missing 1 required positional argument: 'data_asset_name'
-[2025-10-25T23:23:21.098+0000] {taskinstance.py:1398} INFO - Marking task as FAILED. dag_id=crypto_events_dag, task_id=ge_validate_raw, execution_date=20251025T232040, start_date=20251025T232317, end_date=20251025T232321
-[2025-10-25T23:23:21.112+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 18 for task ge_validate_raw (__init__() missing 1 required positional argument: 'data_asset_name'; 150)
-[2025-10-25T23:23:21.149+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
-[2025-10-25T23:23:21.178+0000] {taskinstance.py:2776} INFO - 0 downstream tasks scheduled from follow-on schedule check
