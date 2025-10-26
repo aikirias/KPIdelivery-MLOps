@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import boto3
 import numpy as np
@@ -75,3 +75,35 @@ def run_drift_report(**context: Any) -> Dict[str, Any]:
         print("No se detectó drift para la semana analizada.")
 
     return {"drift_detected": drift_detected, "report": str(report_path), "s3_key": s3_key}
+
+
+def calculate_recent_drift(window: int = 8) -> Optional[Dict[str, Any]]:
+    """Compute drift stats between the latest snapshot and recent history."""
+    if not config.REFERENCE_HISTORY_PATH.exists():
+        return None
+    history = pd.read_parquet(config.REFERENCE_HISTORY_PATH)
+    if history.empty or "snapshot_date" not in history.columns:
+        return None
+    snapshots = (
+        history["snapshot_date"].dropna().drop_duplicates().sort_values().tolist()
+    )
+    if len(snapshots) < 2:
+        return None
+    current_date = snapshots[-1]
+    reference_dates = snapshots[max(0, len(snapshots) - window - 1) : -1]
+    if not reference_dates:
+        return None
+    reference_df = history[history["snapshot_date"].isin(reference_dates)]
+    current_df = history[history["snapshot_date"] == current_date]
+    if reference_df.empty or current_df.empty:
+        return None
+    report = Report(metrics=[DataDriftPreset()])
+    report.run(
+        reference_data=reference_df[config.FEATURE_COLUMNS],
+        current_data=current_df[config.FEATURE_COLUMNS],
+    )
+    summary = report.as_dict()
+    dataset_result = summary["metrics"][0]["result"]
+    drift_share = float(dataset_result.get("drift_share", 0.0))
+    drift_detected = bool(dataset_result.get("drift_detected", False))
+    return {"drift_share": drift_share, "drift_detected": drift_detected}

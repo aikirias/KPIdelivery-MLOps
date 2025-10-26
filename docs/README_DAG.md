@@ -49,15 +49,15 @@ If either validation fails, fix the offending raw data (or adjust Faker settings
 
 # churn_training_dag
 
-Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, trains a logistic regression model, and manages the MLflow registry lifecycle.
+Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, trains a logistic regression model, and manages the MLflow registry lifecycle. The DAG is now scheduled via Airflow Datasets tied to the source CSVs, so it only runs when `churn_data_watchdog` detects a real data change.
 
 ## Task Graph
 1. **clean_raw_sources** – Validates + normalizes the CSV inputs, writes canonical parquet snapshots for payments and the user base.
 2. **feature_engineering** – Aggregates payments (counts, sums, discounts), joins app usage + demographics + funds/ML activity, derives binary features, computes the target label, and updates the drift reference history (last 8 weekly snapshots).
-3. **train_spark_model** – Creates a Spark session against `spark://spark-master:7077`, runs a small grid search over `regParam` / `elasticNetParam` for logistic regression, evaluates each candidate on a holdout split, and logs metrics + params + explainability artifacts (SHAP plot + mean absolute values) to MLflow (`churn_retention` experiment). Artifacts land in MinIO bucket `mlflow-artifacts`.
+3. **train_spark_model** – Creates a Spark session against `spark://spark-master:7077`, runs a small grid search over `regParam` / `elasticNetParam` for logistic regression, evaluates each candidate on a holdout split, and logs metrics + params + explainability artifacts (SHAP plot + mean absolute values) to MLflow (`churn_retention` experiment). The task also records Evidently’s latest `drift_share` + `drift_detected` metrics so each run links model quality with feature stability. Artifacts land in MinIO bucket `mlflow-artifacts`.
 4. **evaluate_candidate** – Registers the run as a new model version inside MLflow (`churn-model`), compares its ROC AUC with the current Production version, and stores `{promote, candidate_version, metrics}` in XCom.
 5. **decide_promotion** – Branches to `promote_model` or `skip_promotion` depending on the evaluation result.
-6. **promote_model / skip_promotion** – Transition the new version to Production (archiving old versions) or just log that it was skipped.
+6. **promote_model / skip_promotion** – Transition the new version to Production (archiving old versions) or just log that it was skipped. Promotion now requires the candidate ROC AUC to beat the current Production model by at least `CHURN_PROMOTION_MIN_DELTA` (default 0.005) to avoid flip-flopping on noise.
 7. **notify_success** – Final log hook.
 
 ## Key Files / Paths
@@ -72,6 +72,12 @@ Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, 
 - After a run, browse `http://localhost:5000` to inspect the new run/metrics and confirm whether the candidate was promoted to Production.
 - Spark UI (`http://localhost:8082`) shows the submitted application while `train_spark_model` is running.
 - The Streamlit app (`http://localhost:8601`) loads the Production model once it exists; the UI displays a warning if only the heuristic fallback is available.
+
+---
+
+# churn_data_watchdog
+
+Daily DAG that hashes every churn CSV and emits all Dataset outlets when any file changes. `churn_training_dag` lists those Datasets in its schedule, so it automatically retrains after data refreshes and stays idle otherwise. The state file lives in `airflow/mlops/artifacts/source_hashes.json`.
 
 ---
 

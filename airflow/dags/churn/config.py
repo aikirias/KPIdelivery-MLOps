@@ -24,6 +24,7 @@ DRIFT_REPORTS_DIR.mkdir(exist_ok=True, parents=True)
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 MODEL_NAME = os.getenv("CHURN_MODEL_NAME", "churn-model")
 METRIC_KEY = "roc_auc"
+PROMOTION_MIN_DELTA = float(os.getenv("CHURN_PROMOTION_MIN_DELTA", "0.005"))
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "minio")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "minio123")

@@ -16,6 +16,7 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.sql import SparkSession
 
 from churn import config
+from churn.tasks import drift
 
 HYPERPARAM_GRID: List[Dict[str, float]] = [
     {"regParam": 0.01, "elasticNetParam": 0.0},
@@ -103,6 +104,13 @@ def train_with_spark(**context: Any) -> Dict[str, Any]:
         shap_path, mean_abs = _log_explainability(best["model"], best["run_id"])
         _log_dataset(best["run_id"])
         _log_mean_abs_shap(best["run_id"], mean_abs, shap_path)
+        drift_stats = drift.calculate_recent_drift()
+        if drift_stats:
+            with mlflow.start_run(run_id=best["run_id"]):
+                mlflow.log_metric("recent_drift_share", drift_stats["drift_share"])
+                mlflow.log_metric(
+                    "recent_drift_detected", int(drift_stats["drift_detected"])
+                )
 
         payload = {"run_id": best["run_id"], "metric": best["metric"]}
         (config.ARTIFACT_DIR / "last_training.json").write_text(json.dumps(payload, indent=2))
@@ -137,11 +145,16 @@ def evaluate_candidate(**context: Any) -> Dict[str, Any]:
             prod_run = client.get_run(mv.run_id)
             production_metric = prod_run.data.metrics.get(config.METRIC_KEY)
             break
-
-    promote = production_metric is None or candidate_metric >= production_metric
+    margin = config.PROMOTION_MIN_DELTA
+    promote = False
+    if production_metric is None:
+        promote = True
+    elif candidate_metric - production_metric >= margin:
+        promote = True
     return {
         "candidate_metric": candidate_metric,
         "production_metric": production_metric,
+        "promotion_margin": margin,
         "promote": promote,
         "candidate_version": version,
         "run_id": run_id,
@@ -176,8 +189,9 @@ def skip_model(**context: Any) -> None:
     evaluation = context["ti"].xcom_pull(task_ids="evaluate_candidate")
     if evaluation:
         print(
-            "Modelo candidato no supera al Production actual. "
-            f"Candidato={evaluation['candidate_metric']:.4f} vs Prod={evaluation['production_metric']}"
+            "Modelo candidato no supera al Production actual con el margen configurado. "
+            f"Candidato={evaluation['candidate_metric']:.4f} vs Prod={evaluation['production_metric']} "
+            f"(mínimo requerido: +{evaluation['promotion_margin']:.4f})"
         )
 
 

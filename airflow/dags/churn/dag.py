@@ -6,6 +6,7 @@ from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator, PythonOperator
 
+from churn.datasets import CSV_DATASETS
 from churn.tasks import data_prep, modeling
 
 
@@ -16,7 +17,7 @@ def _notify_success(**_):
 def build_dag() -> DAG:
     with DAG(
         dag_id="churn_training_dag",
-        schedule="@daily",
+        schedule=CSV_DATASETS,
         start_date=pendulum.datetime(2024, 6, 1, tz="UTC"),
         catchup=False,
         max_active_runs=1,
