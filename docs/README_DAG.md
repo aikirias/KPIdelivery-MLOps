@@ -44,3 +44,47 @@ Any Great Expectations failure stops the DAG before touching prod. The helper fu
 
 ## Failure Recovery
 If either validation fails, fix the offending raw data (or adjust Faker settings), optionally delete quarantine records for clarity, and re-trigger the DAG (`make dag-run`). Because the merge step never ran, prod remains unchanged until both suites pass.
+
+---
+
+# churn_training_dag
+
+Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, trains a logistic regression model, and manages the MLflow registry lifecycle.
+
+## Task Graph
+1. **clean_raw_sources** – Validates + normalizes the CSV inputs, writes canonical parquet snapshots for payments and the user base.
+2. **feature_engineering** – Aggregates payments (counts, sums, discounts), joins app usage + demographics + funds/ML activity, derives binary features, computes the target label, and updates the drift reference history (last 8 weekly snapshots).
+3. **train_spark_model** – Creates a Spark session against `spark://spark-master:7077`, trains a logistic regression classifier with Spark ML, evaluates against a holdout split, and logs everything to MLflow (`churn_retention` experiment). Artifacts land in MinIO bucket `mlflow-artifacts`.
+4. **evaluate_candidate** – Registers the run as a new model version inside MLflow (`churn-model`), compares its ROC AUC with the current Production version, and stores `{promote, candidate_version, metrics}` in XCom.
+5. **decide_promotion** – Branches to `promote_model` or `skip_promotion` depending on the evaluation result.
+6. **promote_model / skip_promotion** – Transition the new version to Production (archiving old versions) or just log that it was skipped.
+7. **notify_success** – Final log hook.
+
+## Key Files / Paths
+- Raw CSVs: `airflow/mlops/*.csv` (mounted at `/opt/mlops` inside Airflow and Spark containers).
+- Cleaned snapshots: `airflow/mlops/artifacts/payments_clean.parquet` + `user_base.parquet`.
+- Feature matrix: `airflow/mlops/artifacts/churn_features.parquet`.
+- Reference history (up to 8 snapshots): `airflow/mlops/artifacts/reference_history.parquet`.
+- MLflow experiment: `churn_retention` (tracking URI `http://mlflow:5000`).
+- Model registry: `churn-model` (Production stage consumed by the Streamlit app).
+
+## Verifying Behavior
+- After a run, browse `http://localhost:5000` to inspect the new run/metrics and confirm whether the candidate was promoted to Production.
+- Spark UI (`http://localhost:8082`) shows the submitted application while `train_spark_model` is running.
+- The Streamlit app (`http://localhost:8601`) loads the Production model once it exists; the UI displays a warning if only the heuristic fallback is available.
+
+---
+
+# churn_drift_monitor_w
+
+Weekly Evidently workflow that compares the latest scoring snapshot against the rolling 8-week reference.
+
+## Task Graph
+1. **build_current_snapshot** – Copies `churn_features.parquet`, injects light noise to simulate the current week, and writes `current_snapshot.parquet`.
+2. **run_drift_report** – Executes Evidently's `DataDriftPreset`, saves an HTML report under `airflow/mlops/artifacts/drift_reports/`, and uploads it to MinIO bucket `mlflow-artifacts` (key `drift-reports/<date>.html`). Returns `{drift_detected, report_path, s3_key}` via XCom.
+3. **log_drift_result** – Prints whether drift was detected and surfaces the S3 key in the task log for quick access.
+
+## Notes
+- Ensure `churn_training_dag` has run at least once so the drift reference history exists.
+- The Evidently HTML can be downloaded from the MinIO console (`http://localhost:9001/browser/mlflow-artifacts/drift-reports`).
+- Extend the DAG easily by adding notification hooks (email, Slack, etc.) reacting to the `drift_detected` flag.

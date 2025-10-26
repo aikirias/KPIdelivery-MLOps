@@ -8,6 +8,10 @@ __pycache__/
 airflow/logs/
 airflow/logs_old/
 airflow/ge/uncommitted/
+airflow/mlops/artifacts/
+notebooks/.ipynb_checkpoints/
+app/__pycache__/
+infrastructure/.env
 
 # Docker data volumes (if accidentally created)
 postgres_data/

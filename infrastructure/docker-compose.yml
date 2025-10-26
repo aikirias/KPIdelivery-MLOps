@@ -2,24 +2,32 @@ x-airflow-common: &airflow-common
   build:
     context: ./airflow
     dockerfile: Dockerfile
-  env_file: ./.env.airflow
+  env_file: ./.env
   environment:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/crypto_db
     AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres:5432/crypto_db
     AIRFLOW__CORE__LOAD_EXAMPLES: "False"
     AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: America/Buenos_Aires
+    MLFLOW_TRACKING_URI: http://mlflow:5000
+    MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    AWS_ACCESS_KEY_ID: minio
+    AWS_SECRET_ACCESS_KEY: minio123
+    SPARK_MASTER_URL: spark://spark-master:7077
+    CHURN_DATA_ROOT: /opt/mlops
   volumes:
     - ../airflow/dags:/opt/airflow/dags
     - ../airflow/scripts:/opt/airflow/scripts
     - ../airflow/logs:/opt/airflow/logs
     - ../database/sql/init:/opt/airflow/sql
     - ../airflow/ge:/opt/airflow/ge
+    - ../airflow/mlops:/opt/mlops
   depends_on:
     - postgres
     - redis
     - minio
     - minio-mc
+    - mlflow
 
 services:
   postgres:
@@ -117,6 +125,84 @@ services:
     restart: unless-stopped
     depends_on:
       - airflow-init
+
+  mlflow:
+    build:
+      context: ./mlflow
+    container_name: crypto_mlflow
+    environment:
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - minio
+
+  jupyterlab:
+    build:
+      context: ./jupyterlab
+    container_name: crypto_jupyterlab
+    environment:
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+    volumes:
+      - ../notebooks:/home/jovyan/work
+      - ../airflow/mlops:/opt/mlops
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mlflow
+
+  spark-master:
+    build:
+      context: ./spark
+    container_name: crypto_spark_master
+    environment:
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      SPARK_NO_DAEMONIZE: "true"
+    ports:
+      - "7077:7077"
+      - "8082:8082"
+    volumes:
+      - ../airflow/mlops:/opt/mlops
+    command: ["/opt/spark/bin/spark-class","org.apache.spark.deploy.master.Master","--host","spark-master","--port","7077","--webui-port","8082"]
+
+  spark-worker:
+    build:
+      context: ./spark
+    container_name: crypto_spark_worker
+    environment:
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      SPARK_NO_DAEMONIZE: "true"
+      SPARK_WORKER_MEMORY: 2G
+      SPARK_WORKER_CORES: 2
+    depends_on:
+      - spark-master
+    volumes:
+      - ../airflow/mlops:/opt/mlops
+    command: ["/opt/spark/bin/spark-class","org.apache.spark.deploy.worker.Worker","spark://spark-master:7077","--webui-port","8083"]
+
+  streamlit:
+    build:
+      context: ./streamlit
+    container_name: crypto_streamlit
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+    volumes:
+      - ../app:/app
+    ports:
+      - "8601:8601"
+    depends_on:
+      - mlflow
 
 volumes:
   postgres_data:
