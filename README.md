@@ -6,7 +6,7 @@ Repo organized by functional layers:
 - `airflow/`: DAG packages (`crypto_events`, `churn`), scripts, and the Great Expectations context mounted inside the Airflow containers.
 - `airflow/mlops/`: source CSVs for the churn exercise + derived artifacts (ignored via `.gitignore`).
 - `database/`: SQL DDL/seed scripts consumed by Postgres bootstrap (crypto schemas + MLflow DB provisioning).
-- `docs/`: runbooks (`docs/README.md` for the stack, `docs/RUNBOOK.md` for DAG-level behavior).
+- `docs/`: runbooks (`docs/README.md` for the stack, `docs/RUNBOOK.md` for DAG-level behavior). DAG-specific playbooks live alongside each DAG (`airflow/dags/churn/CHURN_PLAYBOOK.md`, `airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`).
 - `app/`: Streamlit UI that reads the latest Production model from MLflow for manual scoring.
 - `notebooks/`: mounted into the JupyterLab container for interactive exploration.
 - `Makefile`: convenience targets (`make init`, `make up`, `make down`, `make reset`, `make dag-run`, etc.) wrapping the Compose workflow.

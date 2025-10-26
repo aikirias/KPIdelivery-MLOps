@@ -126,6 +126,7 @@ Weekly Evidently workflow that compares the latest scoring snapshot against the 
 ## Useful References
 
 - **Architecture + churn deep dive**: [`airflow/dags/churn/CHURN_PLAYBOOK.md`](../airflow/dags/churn/CHURN_PLAYBOOK.md)
+- **Crypto DAG playbook**: [`airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`](../airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md)
 - **Top-level quickstart / credentials**: [`README.md`](../README.md#quickstart-happy-path)
 - **Make targets**: `Makefile`
 - **Airflow dataset metadata**: Postgres `dataset` and `dataset_event` tables (connect via `docker compose … exec postgres psql -U airflow -d crypto_db`)
