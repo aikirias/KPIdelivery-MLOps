@@ -42,6 +42,14 @@ Any Great Expectations failure stops the DAG before touching prod. The helper fu
     Then browse `http://localhost:9001/browser/ge-artifacts/data_docs` in the MinIO console.
 - **Prod merge**: Query `prod.BT_CRYPTO_EVENTS` to verify upserts and `is_active` toggling. For example, rows removed from staging in the last window should flip to `false`.
 
+### Quick Troubleshooting
+
+| Symptom | Checks | Resolution |
+| --- | --- | --- |
+| DAG run stuck on GE | Look at `dqm.BT_CRYPTO_EVENTS_REJECTS` for rule violations and inspect logs under `airflow/logs/dag_id=crypto_events_dag/...` | Fix raw data (or rerun Faker) and re-trigger DAG |
+| No logs in UI | Host folder `airflow/logs` missing or read-only | `make clean` (ensures 777 perms) and `make up` |
+| Prod table unchanged | GE task failed or DAG aborted before merge | Rerun once validations succeed; merge is transactional so prod remains safe |
+
 ## Failure Recovery
 If either validation fails, fix the offending raw data (or adjust Faker settings), optionally delete quarantine records for clarity, and re-trigger the DAG (`make dag-run`). Because the merge step never ran, prod remains unchanged until both suites pass.
 
@@ -79,6 +87,15 @@ Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, 
 
 Daily DAG that hashes every churn CSV and emits all Dataset outlets when any file changes. `churn_training_dag` lists those Datasets in its schedule, so it automatically retrains after data refreshes and stays idle otherwise. The state file lives in `airflow/mlops/artifacts/source_hashes.json`.
 
+## Tasks
+1. **detect_csv_changes** (`ShortCircuitOperator`) – verifies each CSV exists under `/opt/mlops`, computes MD5 hashes, compares them with the previous snapshot stored in `source_hashes.json`, and short-circuits if nothing changed.
+2. **emit_dataset_update** (`EmptyOperator`) – has the five churn datasets (`file:///opt/mlops/*.csv`) in its `outlets`. When it runs, the scheduler records one event per dataset, immediately triggering `churn_training_dag`.
+
+## Usage
+- First run: delete `airflow/mlops/artifacts/source_hashes.json` (or leave it missing), then trigger the DAG. It will detect “changes” because there is no baseline and emit events.
+- Ongoing: allow the daily schedule to run; if no files changed, it exits quickly and no training occurs. If you manually edit a CSV (e.g., via JupyterLab), rerun the watchdog to kick off retraining.
+- Debugging: query `dataset_event` table in the Airflow metadata DB to verify events were created, or inspect the DAG run log (look for “Detectados cambios en los CSV…”).
+
 ---
 
 # churn_drift_monitor_w
@@ -94,3 +111,21 @@ Weekly Evidently workflow that compares the latest scoring snapshot against the 
 - Ensure `churn_training_dag` has run at least once so the drift reference history exists.
 - The Evidently HTML can be downloaded from the MinIO console (`http://localhost:9001/browser/mlflow-artifacts/drift-reports`).
 - Extend the DAG easily by adding notification hooks (email, Slack, etc.) reacting to the `drift_detected` flag.
+
+---
+
+## Operational Checklist
+
+1. **Stack up** – `make reset` for a fresh environment or `make up` for reuse. Confirm all containers report `Up` via `docker compose … ps`.
+2. **Watchdog** – Run/verify `churn_data_watchdog` so dataset events emit. Without events, `churn_training_dag` will stay idle.
+3. **Churn training** – Follow the dataset-triggered run to completion; MLflow should show `roc_auc`, `recent_drift_share`, SHAP artifacts, and a new/updated `churn-model` version.
+4. **Crypto pipeline** – `make dag-run` (or let schedule run) and validate rejects/staging/prod tables plus GE Data Docs in MinIO.
+5. **Drift monitor** – Ensure `churn_drift_monitor_w` completes weekly (or trigger manually) so a fresh Evidently HTML lands in `mlflow-artifacts/drift-reports/`.
+6. **Dashboards** – Visit MLflow, MinIO, Streamlit, and pgAdmin to demonstrate outputs and allow reviewers to self-serve.
+
+## Useful References
+
+- **Architecture + churn deep dive**: [`airflow/dags/churn/CHURN_PLAYBOOK.md`](../airflow/dags/churn/CHURN_PLAYBOOK.md)
+- **Top-level quickstart / credentials**: [`README.md`](../README.md#quickstart-happy-path)
+- **Make targets**: `Makefile`
+- **Airflow dataset metadata**: Postgres `dataset` and `dataset_event` tables (connect via `docker compose … exec postgres psql -U airflow -d crypto_db`)

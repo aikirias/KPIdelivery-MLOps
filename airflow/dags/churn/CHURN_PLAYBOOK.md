@@ -36,6 +36,19 @@ This folder contains the Airflow DAGs, configs, and helper tasks that power the 
    ```
    Reports live in MinIO bucket `mlflow-artifacts` at `drift-reports/<date>.html`.
 
+## MLflow Metrics & Artifacts
+
+| Artifact / Metric | Where to find it | Logged by | Why it matters |
+| --- | --- | --- | --- |
+| `roc_auc` metric | MLflow run → Metrics tab | `train_spark_model` | Primary model selection metric |
+| `recent_drift_share`, `recent_drift_detected` metrics | MLflow run → Metrics | `train_spark_model` (via Evidently helper) | Correlate performance with feature stability |
+| `dataset/churn_features.parquet` artifact | MLflow run → Artifacts | `train_spark_model` | Exact training dataset snapshot |
+| `explainability/shap_summary.png` | MLflow run → Artifacts (download) | `train_spark_model` | Visual SHAP summary served in Streamlit |
+| `explainability/mean_abs_shap.json` | MLflow run → Artifacts | `train_spark_model` | Tabular feature importance for Streamlit/Jupyter |
+| Drift report HTML | MinIO `mlflow-artifacts/drift-reports/<date>.html` | `churn_drift_monitor_w` | Weekly data drift diagnosis |
+
+Streamlit pulls the Production run’s SHAP artifacts automatically; MLflow keeps the full history for audits.
+
 ## Data Inputs
 
 Raw CSVs are mounted under `airflow/mlops/` and baked into the containers at `/opt/mlops`. On each run:
@@ -49,5 +62,15 @@ Raw CSVs are mounted under `airflow/mlops/` and baked into the containers at `/o
 - Swap the Spark model in `tasks/modeling.py` (e.g., GradientBoostedTrees or XGBoost via Spark ML) or adjust the evaluation metric/tagging logic.
 - Change `config.PROMOTION_MIN_DELTA` (env var `CHURN_PROMOTION_MIN_DELTA`) to tighten/relax the promotion guard or replace it with a bootstrap test.
 - Wire additional notification hooks (Slack, email) in `decide_promotion`/`promote_model` or the drift DAG.
+
+## Troubleshooting & FAQs
+
+| Question | Answer |
+| --- | --- |
+| **Why didn’t `churn_training_dag` run after I edited a CSV?** | The DAG is dataset-triggered. Ensure `churn_data_watchdog` executed after the edit. Remove `airflow/mlops/artifacts/source_hashes.json` or run `airflow dags trigger churn_data_watchdog` to force a new hash snapshot. Inspect the Airflow metadata DB (`dataset_event` table) to confirm events were emitted. |
+| **Training run failed during Spark HPO** | Check `airflow/logs/dag_id=churn_training_dag/.../train_spark_model/` and the Spark UI (`http://localhost:8082`). Common causes: Spark worker not up, MinIO credentials missing, or not enough data variety. Fix and rerun the failed task from the Airflow UI. |
+| **Promotion skipped even though metrics look similar** | We require the candidate to beat Production by at least `CHURN_PROMOTION_MIN_DELTA` (default 0.005). Adjust the env var or improve the model before expecting promotion. |
+| **Streamlit still shows “Heurística local”** | No Production model exists yet. Trigger the churn DAG, ensure promotion succeeded, then refresh Streamlit. |
+| **Where are the watchdog hashes stored?** | `airflow/mlops/artifacts/source_hashes.json`. Remove it to force the watchdog to treat the next run as “changed”. |
 
 Everything runs entirely inside Docker: Spark master/worker, MLflow, Airflow (Celery executor), Streamlit UI, and JupyterLab. Use the `Makefile` targets to reset, rebuild, and trigger DAGs quickly during development.
