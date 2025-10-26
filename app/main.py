@@ -1,11 +1,13 @@
 import json
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 import mlflow
 import numpy as np
 import pandas as pd
 import streamlit as st
+from mlflow import artifacts
+from mlflow.tracking import MlflowClient
 
 
 FEATURES = [
@@ -21,23 +23,34 @@ FEATURES = [
     "frequency_ml",
     "has_investment",
 ]
+MODEL_NAME = os.getenv("CHURN_MODEL_NAME", "churn-model")
 
 
 @st.cache_resource(show_spinner=False)
 def load_model():
     tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000")
     mlflow.set_tracking_uri(tracking_uri)
+    client = MlflowClient()
+    production_version = None
     try:
-        model = mlflow.pyfunc.load_model("models:/churn-model/Production")
+        versions = client.search_model_versions(f"name='{MODEL_NAME}'")
+        for mv in versions:
+            if mv.current_stage == "Production":
+                production_version = mv
+                break
+    except Exception:
+        production_version = None
+    try:
+        model = mlflow.pyfunc.load_model(f"models:/{MODEL_NAME}/Production")
         st.success("Modelo Production cargado desde MLflow.")
-        return model
+        return model, production_version
     except Exception as exc:
         st.warning(
             "No se pudo cargar el modelo Production. "
             "Revisá que exista una versión publicada en MLflow.\n\n"
             f"Detalle: {exc}"
         )
-        return None
+        return None, production_version
 
 
 def predict(model, payload: Dict[str, float]) -> Dict[str, float]:
@@ -52,6 +65,36 @@ def predict(model, payload: Dict[str, float]) -> Dict[str, float]:
     else:
         prob = float(preds[0])
     return {"probability": prob, "explanation": "Inferencia usando modelo Production."}
+
+
+def _render_shap_section(production_meta: Optional[object]) -> None:
+    if production_meta is None:
+        st.info("No hay un modelo en Production para mostrar SHAP.")
+        return
+    try:
+        shap_png = artifacts.download_artifacts(
+            run_id=production_meta.run_id,
+            artifact_path="explainability/shap_summary.png",
+        )
+        mean_json = artifacts.download_artifacts(
+            run_id=production_meta.run_id,
+            artifact_path="explainability/mean_abs_shap.json",
+        )
+    except Exception as exc:
+        st.warning(f"No se encontraron artefactos de explainability: {exc}")
+        return
+
+    st.image(shap_png, caption="SHAP summary plot", use_column_width=True)
+    try:
+        with open(mean_json) as handle:
+            data = json.load(handle)
+        imp_df = (
+            pd.DataFrame(sorted(data.items(), key=lambda x: x[1], reverse=True), columns=["feature", "mean_abs_shap"])
+            .reset_index(drop=True)
+        )
+        st.dataframe(imp_df, use_container_width=True)
+    except Exception as exc:
+        st.warning(f"No se pudo cargar la tabla de importancias: {exc}")
 
 
 def main():
@@ -74,7 +117,7 @@ def main():
             )
         )
 
-    model = load_model()
+    model, production_meta = load_model()
 
     col1, col2 = st.columns(2)
 
@@ -99,6 +142,10 @@ def main():
         st.info(result["explanation"])
 
     st.caption("Los parámetros se calibran en los DAGs de entrenamiento y monitoreo.")
+
+    st.divider()
+    st.subheader("Explainability (SHAP)")
+    _render_shap_section(production_meta)
 
 
 if __name__ == "__main__":

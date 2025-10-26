@@ -31,6 +31,10 @@ MINIO_ENDPOINT = os.getenv("MLFLOW_S3_ENDPOINT_URL", "http://minio:9000")
 MLFLOW_BUCKET = "mlflow-artifacts"
 
 SPARK_MASTER_URL = os.getenv("SPARK_MASTER_URL", "local[*]")
+SPARK_JARS_PACKAGES = os.getenv(
+    "SPARK_JARS_PACKAGES",
+    "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
+)
 
 FEATURE_COLUMNS = [
     "payments_last_60d",

@@ -54,7 +54,7 @@ Spark-based churn pipeline that reads `airflow/mlops/*.csv`, prepares features, 
 ## Task Graph
 1. **clean_raw_sources** – Validates + normalizes the CSV inputs, writes canonical parquet snapshots for payments and the user base.
 2. **feature_engineering** – Aggregates payments (counts, sums, discounts), joins app usage + demographics + funds/ML activity, derives binary features, computes the target label, and updates the drift reference history (last 8 weekly snapshots).
-3. **train_spark_model** – Creates a Spark session against `spark://spark-master:7077`, trains a logistic regression classifier with Spark ML, evaluates against a holdout split, and logs everything to MLflow (`churn_retention` experiment). Artifacts land in MinIO bucket `mlflow-artifacts`.
+3. **train_spark_model** – Creates a Spark session against `spark://spark-master:7077`, runs a small grid search over `regParam` / `elasticNetParam` for logistic regression, evaluates each candidate on a holdout split, and logs metrics + params + explainability artifacts (SHAP plot + mean absolute values) to MLflow (`churn_retention` experiment). Artifacts land in MinIO bucket `mlflow-artifacts`.
 4. **evaluate_candidate** – Registers the run as a new model version inside MLflow (`churn-model`), compares its ROC AUC with the current Production version, and stores `{promote, candidate_version, metrics}` in XCom.
 5. **decide_promotion** – Branches to `promote_model` or `skip_promotion` depending on the evaluation result.
 6. **promote_model / skip_promotion** – Transition the new version to Production (archiving old versions) or just log that it was skipped.

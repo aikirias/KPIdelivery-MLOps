@@ -1,0 +1,49 @@
+# Churn MLOps Package
+
+This folder contains the Airflow DAGs, configs, and helper tasks that power the churn prediction pipeline. It implements the full ML lifecycle:
+
+1. **Data preparation**: `clean_raw_sources` and `feature_engineering` load the CSVs under `/opt/mlops`, consolidate the user base, build aggregations/labels, and persist clean parquet snapshots. Artifacts live under `airflow/mlops/artifacts/`.
+2. **Model training** (`train_spark_model`): spins up a Spark session (`spark://spark-master:7077`), runs a lightweight hyperparameter search over `regParam`/`elasticNetParam`, evaluates each candidate on a holdout split, and keeps the best run. Metrics, params, dataset snapshots, and SHAP explainability artifacts (PNG + mean absolute values) are logged to MLflow (`churn_retention` experiment) so Streamlit/Jupyter can surface them instantly. Models get registered under `churn-model`.
+3. **Evaluation & registry**: `evaluate_candidate` compares the candidate ROC AUC vs. the current Production version. `decide_promotion` branches to `promote_model` (if better) or `skip_promotion`. Promotion updates the MLflow Model Registry so Streamlit/Jupyter consumers always hit the latest Production version.
+4. **Drift monitoring** (`churn_drift_monitor_w`): weekly DAG that snapshots the latest features, runs Evidently’s data drift preset against the last 8 snapshots, uploads the HTML report to `s3://mlflow-artifacts/drift-reports/<date>.html`, and logs whether drift was detected.
+
+## Key Files
+
+- `config.py`: centralizes paths (`/opt/mlops`), MLflow vars, feature columns, and MinIO credentials.
+- `dag.py`: training DAG definition (`churn_training_dag`).
+- `drift_dag.py`: weekly drift DAG (`churn_drift_monitor_w`).
+- `tasks/data_prep.py`: all the cleaning + feature engineering code. Outputs `churn_features.parquet` and rolling reference history.
+- `tasks/modeling.py`: Spark ML training, MLflow logging, evaluation, and registry promotion logic.
+- `tasks/drift.py`: Evidently snapshot generation and report upload utilities.
+
+## Running the pipeline
+
+1. Ensure the stack is booted via `make reset && make up` (or just `make up` if services are already built). Spark, MLflow, MinIO, and Airflow must be running.
+2. Trigger the training DAG from Airflow:
+   ```bash
+   docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
+     airflow dags trigger churn_training_dag
+   ```
+   Watch logs in the UI or via `docker compose ... logs -f airflow-worker`.
+3. After a successful run, check MLflow (`http://localhost:5000`) for the new run + registered version. Streamlit (`http://localhost:8601`) will now consume the Production model.
+4. Trigger the drift DAG weekly (or manually) to generate the Evidently report:
+   ```bash
+   docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
+     airflow dags trigger churn_drift_monitor_w
+   ```
+   Reports live in MinIO bucket `mlflow-artifacts` at `drift-reports/<date>.html`.
+
+## Data Inputs
+
+Raw CSVs are mounted under `airflow/mlops/` and baked into the containers at `/opt/mlops`. On each run:
+- Payments are cleaned (`PAYMENTS.csv` → `payments_clean.parquet`).
+- User base is constructed from `ACTIVE_USER.csv`, `DEMOGRAFICOS.csv`, `DINERO_CUENTA.csv`, `MARKETPLACE_DATA.csv`.
+- Features + label (binary churn/no churn) are derived for every user; history is retained for drift.
+
+## Extending
+
+- Edit `config.FEATURE_COLUMNS` / engineering logic to add features.
+- Swap the Spark model in `tasks/modeling.py` (e.g., GradientBoostedTrees or XGBoost via Spark ML) or adjust the evaluation metric/tagging logic.
+- Wire additional notification hooks (Slack, email) in `decide_promotion`/`promote_model` or the drift DAG.
+
+Everything runs entirely inside Docker: Spark master/worker, MLflow, Airflow (Celery executor), Streamlit UI, and JupyterLab. Use the `Makefile` targets to reset, rebuild, and trigger DAGs quickly during development.
