@@ -1,0 +1,64 @@
+{
+  "expectation_suite_name": "suite_staging_candidate",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "site_id",
+          "user_id",
+          "purchase_date",
+          "crypto_type",
+          "purchase_price",
+          "purchase_units",
+          "purchase_value",
+          "purchase_value_calc",
+          "staged_at"
+        ]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {"column": "purchase_date", "type_": "DATE"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "purchase_price",
+        "min_value": 0
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "purchase_units",
+        "min_value": 0,
+        "strict_min": true
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "purchase_value",
+        "min_value": 0,
+        "strict_min": true
+      }
+    },
+    {
+      "expectation_type": "expect_compound_columns_to_be_unique",
+      "kwargs": {
+        "column_list": ["site_id", "user_id", "purchase_date", "crypto_type"]
+      }
+    },
+    {
+      "expectation_type": "expect_column_pair_values_to_be_equal",
+      "kwargs": {
+        "column_A": "purchase_value",
+        "column_B": "purchase_value_calc"
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.12"
+  }
+}

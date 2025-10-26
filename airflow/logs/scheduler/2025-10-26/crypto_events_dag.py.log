@@ -1,0 +1,337 @@
+[2025-10-26T00:00:07.807+0000] {processor.py:157} INFO - Started process (PID=543) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:00:07.808+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:00:07.810+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:07.809+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:00:09.713+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:09.712+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:00:11.143+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:00:11.170+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:11.170+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:00:11.211+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.407 seconds
+[2025-10-26T00:00:41.352+0000] {processor.py:157} INFO - Started process (PID=569) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:00:41.354+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:00:41.356+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:41.355+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:00:40.882+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:40.880+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:00:42.380+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:00:42.412+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:42.411+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:00:42.436+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:00:42.436+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:00:42.454+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.274 seconds
+[2025-10-26T00:01:12.543+0000] {processor.py:157} INFO - Started process (PID=595) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:01:12.546+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:01:12.548+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:12.548+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:01:14.277+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:14.277+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:01:15.712+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:01:15.746+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:15.746+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:01:15.773+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:15.773+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:01:15.797+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.256 seconds
+[2025-10-26T00:01:46.184+0000] {processor.py:157} INFO - Started process (PID=621) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:01:46.188+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:01:46.191+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:46.191+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:01:47.872+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:47.871+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:01:49.338+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:01:49.375+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:49.375+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:01:49.397+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:01:49.397+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:01:49.418+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.238 seconds
+[2025-10-26T00:02:19.615+0000] {processor.py:157} INFO - Started process (PID=647) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:02:19.617+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:02:19.619+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:19.619+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:02:21.445+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:21.444+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:02:22.977+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:02:23.007+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:23.007+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:02:23.054+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:23.054+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:02:23.075+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.463 seconds
+[2025-10-26T00:02:53.342+0000] {processor.py:157} INFO - Started process (PID=673) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:02:53.346+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:02:53.348+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:53.348+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:02:55.039+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:55.038+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:02:56.464+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:02:56.496+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:56.496+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:02:56.518+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:02:56.518+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:02:56.542+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.201 seconds
+[2025-10-26T00:03:26.813+0000] {processor.py:157} INFO - Started process (PID=699) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:03:26.818+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:03:26.820+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:03:26.820+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:03:28.504+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:03:28.503+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:03:27.728+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:03:27.758+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:03:27.758+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:03:27.779+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:03:27.779+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:03:27.803+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.216 seconds
+[2025-10-26T00:03:58.098+0000] {processor.py:157} INFO - Started process (PID=725) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:03:58.100+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:03:58.102+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:03:58.102+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:03:59.741+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:03:59.741+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:04:01.221+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:04:01.250+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:04:01.250+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:04:01.272+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:04:01.272+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:04:01.293+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.198 seconds
+[2025-10-26T00:04:31.549+0000] {processor.py:157} INFO - Started process (PID=751) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:04:31.552+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:04:31.560+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:04:31.559+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:04:33.594+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:04:33.594+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:04:35.303+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:04:35.337+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:04:35.336+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:04:35.361+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:04:35.361+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:04:35.383+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.837 seconds
+[2025-10-26T00:05:05.740+0000] {processor.py:157} INFO - Started process (PID=777) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:05:05.742+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:05:05.745+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:05.745+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:05:08.016+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:08.015+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:05:09.715+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:05:09.760+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:09.760+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:05:09.804+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:09.804+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:05:09.846+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.124 seconds
+[2025-10-26T00:05:40.270+0000] {processor.py:157} INFO - Started process (PID=803) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:05:40.272+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:05:40.276+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:40.275+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:05:42.132+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:42.131+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:05:43.603+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:05:43.636+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:43.636+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:05:43.700+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:05:43.700+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:05:43.722+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.458 seconds
+[2025-10-26T00:06:14.108+0000] {processor.py:157} INFO - Started process (PID=829) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:06:14.113+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:06:14.114+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:14.114+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:06:16.082+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:16.080+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:06:15.291+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:06:15.325+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:15.325+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:06:15.350+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:15.350+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:06:15.377+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.549 seconds
+[2025-10-26T00:06:46.011+0000] {processor.py:157} INFO - Started process (PID=855) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:06:46.016+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:06:46.018+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:46.018+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:06:47.872+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:47.871+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:06:49.412+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:06:49.441+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:49.441+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:06:49.465+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:06:49.465+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:06:49.495+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.491 seconds
+[2025-10-26T00:07:20.395+0000] {processor.py:157} INFO - Started process (PID=881) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:07:20.397+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:07:20.399+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:20.398+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:07:22.244+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:22.244+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:07:23.750+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:07:23.781+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:23.781+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:07:23.808+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:23.807+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:07:23.833+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.442 seconds
+[2025-10-26T00:07:54.177+0000] {processor.py:157} INFO - Started process (PID=907) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:07:54.178+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:07:54.181+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:54.180+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:07:56.015+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:56.014+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:07:57.532+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:07:57.567+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:57.566+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:07:57.592+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:07:57.591+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:07:57.614+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.440 seconds
+[2025-10-26T00:08:27.954+0000] {processor.py:157} INFO - Started process (PID=933) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:08:27.958+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:08:27.960+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:08:27.960+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:08:29.763+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:08:29.762+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:08:31.159+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:08:31.191+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:08:31.191+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:08:31.213+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:08:31.213+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:08:31.233+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.285 seconds
+[2025-10-26T00:09:01.505+0000] {processor.py:157} INFO - Started process (PID=959) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:09:01.506+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:09:01.508+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:01.508+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:09:01.277+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:01.276+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:09:02.826+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:09:02.860+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:02.860+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:09:02.895+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:02.894+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:09:02.920+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.752 seconds
+[2025-10-26T00:09:33.537+0000] {processor.py:157} INFO - Started process (PID=985) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:09:33.539+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:09:33.550+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:33.549+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:09:35.809+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:35.808+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:09:37.516+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:09:37.549+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:37.549+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:09:37.585+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:09:37.584+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:09:37.619+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.085 seconds
+[2025-10-26T00:10:08.583+0000] {processor.py:157} INFO - Started process (PID=1011) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:10:08.585+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:10:08.587+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:08.587+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:10:10.629+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:10.628+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:10:12.636+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:10:12.673+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:12.673+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:10:12.698+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:12.698+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:10:12.723+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.142 seconds
+[2025-10-26T00:10:43.255+0000] {processor.py:157} INFO - Started process (PID=1037) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:10:43.258+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:10:43.261+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:43.261+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:10:45.491+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:45.491+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:10:47.015+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:10:47.051+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:47.051+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:10:47.073+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:10:47.073+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:10:47.108+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.858 seconds
+[2025-10-26T00:11:17.649+0000] {processor.py:157} INFO - Started process (PID=1063) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:11:17.664+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:11:17.681+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:17.680+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:11:19.683+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:19.682+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:11:21.294+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:11:21.325+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:21.324+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:11:21.351+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:21.351+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:11:21.372+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.727 seconds
+[2025-10-26T00:11:51.499+0000] {processor.py:157} INFO - Started process (PID=1089) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:11:51.502+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:11:51.506+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:51.505+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:11:53.771+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:53.770+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:11:55.300+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:11:55.337+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:55.337+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:11:55.363+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:11:55.362+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:11:55.385+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.889 seconds
+[2025-10-26T00:12:25.743+0000] {processor.py:157} INFO - Started process (PID=1115) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:12:25.744+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:12:25.749+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:12:25.748+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:12:27.891+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:12:27.890+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:12:29.686+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:12:29.729+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:12:29.728+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:12:29.781+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:12:29.781+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:12:29.810+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.071 seconds
+[2025-10-26T00:13:00.449+0000] {processor.py:157} INFO - Started process (PID=1141) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:13:00.453+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:13:00.456+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:00.455+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:13:02.609+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:02.608+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:13:04.355+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:13:04.398+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:04.398+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:13:04.423+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:04.423+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:13:04.445+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.001 seconds
+[2025-10-26T00:13:35.038+0000] {processor.py:157} INFO - Started process (PID=1167) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:13:35.042+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:13:35.045+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:35.044+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:13:37.066+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:37.066+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:13:38.782+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:13:38.814+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:38.814+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:13:38.840+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:13:38.839+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:13:38.881+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.852 seconds
+[2025-10-26T00:14:09.630+0000] {processor.py:157} INFO - Started process (PID=1193) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:14:09.632+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:14:09.635+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:09.635+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:14:12.076+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:12.075+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:14:13.967+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:14:14.012+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:14.010+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:14:14.045+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:14.044+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:14:14.068+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.442 seconds
+[2025-10-26T00:14:44.491+0000] {processor.py:157} INFO - Started process (PID=1219) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:14:44.493+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:14:44.495+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:44.494+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:14:46.511+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:46.510+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:14:48.287+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:14:48.321+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:48.321+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:14:48.345+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:14:48.345+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:14:48.368+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.880 seconds
+[2025-10-26T00:15:18.816+0000] {processor.py:157} INFO - Started process (PID=1245) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:15:18.821+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:15:18.823+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:18.823+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:15:20.949+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:20.948+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:15:22.770+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:15:22.818+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:22.818+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:15:22.842+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:22.842+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:15:22.870+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.057 seconds
+[2025-10-26T00:15:53.370+0000] {processor.py:157} INFO - Started process (PID=1271) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:15:53.376+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:15:53.380+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:53.380+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:15:55.493+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:55.491+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:15:57.270+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:15:57.302+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:57.302+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:15:57.324+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:15:57.324+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:15:57.347+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.988 seconds
+[2025-10-26T00:16:27.788+0000] {processor.py:157} INFO - Started process (PID=1297) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:16:27.793+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:16:27.796+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:16:27.795+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:16:29.604+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:16:29.604+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:16:31.418+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:16:31.451+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:16:31.451+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:16:31.474+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:16:31.474+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:16:31.501+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.716 seconds
+[2025-10-26T00:17:02.375+0000] {processor.py:157} INFO - Started process (PID=1323) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:17:02.379+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:17:02.381+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:02.381+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:17:04.610+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:04.609+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:17:06.208+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:17:06.241+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:06.240+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:17:06.264+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:06.263+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:17:06.288+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.915 seconds
+[2025-10-26T00:17:36.962+0000] {processor.py:157} INFO - Started process (PID=1349) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:17:36.963+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:17:36.966+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:36.965+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:17:39.029+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:39.028+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:17:40.679+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:17:40.712+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:40.711+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:17:40.738+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:17:40.738+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:17:40.762+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.805 seconds
+[2025-10-26T00:18:10.984+0000] {processor.py:157} INFO - Started process (PID=1375) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:18:10.986+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:18:10.989+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:10.988+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:18:13.033+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:13.032+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:18:14.749+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:18:14.795+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:14.794+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:18:14.819+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:14.819+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:18:14.849+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.867 seconds
+[2025-10-26T00:18:45.462+0000] {processor.py:157} INFO - Started process (PID=1401) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:18:45.463+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:18:45.465+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:45.465+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:18:45.119+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:45.118+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:18:46.799+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:18:46.832+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:46.831+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:18:46.855+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:18:46.854+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:18:46.875+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.704 seconds
+[2025-10-26T00:19:17.164+0000] {processor.py:157} INFO - Started process (PID=1427) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:19:17.166+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:19:17.167+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:17.167+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:19:19.456+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:19.455+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:19:21.285+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:19:21.334+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:21.334+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:19:21.379+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:21.375+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:19:21.423+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 4.261 seconds
+[2025-10-26T00:19:51.656+0000] {processor.py:157} INFO - Started process (PID=1453) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:19:51.659+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:19:51.666+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:51.665+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:19:53.640+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:53.639+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:19:55.294+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:19:55.328+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:55.327+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:19:55.351+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:19:55.350+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:19:55.373+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.738 seconds
+[2025-10-26T00:20:25.555+0000] {processor.py:157} INFO - Started process (PID=1479) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:20:25.556+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:20:25.558+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:20:25.558+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:20:27.324+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:20:27.323+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(
+[2025-10-26T00:20:28.801+0000] {processor.py:839} INFO - DAG(s) dict_keys(['crypto_events_dag']) retrieved from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:20:28.832+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:20:28.831+0000] {dag.py:2915} INFO - Sync 1 DAGs
+[2025-10-26T00:20:28.852+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:20:28.852+0000] {dag.py:3696} INFO - Setting next_dagrun for crypto_events_dag to 2025-10-26T00:00:00+00:00, run_after=2025-10-27T00:00:00+00:00
+[2025-10-26T00:20:28.873+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/crypto_events_dag.py took 3.323 seconds
+[2025-10-26T00:20:59.319+0000] {processor.py:157} INFO - Started process (PID=1505) to work on /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:20:59.321+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/crypto_events_dag.py for tasks to queue
+[2025-10-26T00:20:59.325+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:20:59.324+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/crypto_events_dag.py
+[2025-10-26T00:21:01.813+0000] {logging_mixin.py:151} INFO - [2025-10-26T00:21:01.811+0000] {warnings.py:109} WARNING - /home/airflow/.local/lib/python3.8/site-packages/snowflake/connector/options.py:103: UserWarning: You have an incompatible version of 'pyarrow' installed (11.0.0), please install a version that adheres to: 'pyarrow<10.1.0,>=10.0.1; extra == "pandas"'
+  warn_incompatible_dep(

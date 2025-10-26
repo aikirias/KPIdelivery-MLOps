@@ -1,0 +1,16 @@
+[2025-10-25T23:53:51.810+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: crypto_events_dag.generate_fake_history_last_5_days manual__2025-10-25T23:53:47+00:00 [queued]>
+[2025-10-25T23:53:51.821+0000] {taskinstance.py:1157} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: crypto_events_dag.generate_fake_history_last_5_days manual__2025-10-25T23:53:47+00:00 [queued]>
+[2025-10-25T23:53:51.822+0000] {taskinstance.py:1359} INFO - Starting attempt 1 of 1
+[2025-10-25T23:53:51.840+0000] {taskinstance.py:1380} INFO - Executing <Task(BashOperator): generate_fake_history_last_5_days> on 2025-10-25 23:53:47+00:00
+[2025-10-25T23:53:51.856+0000] {standard_task_runner.py:57} INFO - Started process 425 to run task
+[2025-10-25T23:53:51.862+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'crypto_events_dag', 'generate_fake_history_last_5_days', 'manual__2025-10-25T23:53:47+00:00', '--job-id', '14', '--raw', '--subdir', 'DAGS_FOLDER/crypto_events_dag.py', '--cfg-path', '/tmp/tmptbhtkbtw']
+[2025-10-25T23:53:51.864+0000] {standard_task_runner.py:85} INFO - Job 14: Subtask generate_fake_history_last_5_days
+[2025-10-25T23:53:51.929+0000] {task_command.py:415} INFO - Running <TaskInstance: crypto_events_dag.generate_fake_history_last_5_days manual__2025-10-25T23:53:47+00:00 [running]> on host b3f230ac7af6
+[2025-10-25T23:53:52.040+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-eng' AIRFLOW_CTX_DAG_ID='crypto_events_dag' AIRFLOW_CTX_TASK_ID='generate_fake_history_last_5_days' AIRFLOW_CTX_EXECUTION_DATE='2025-10-25T23:53:47+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-10-25T23:53:47+00:00'
+[2025-10-25T23:53:52.041+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2025-10-25T23:53:52.042+0000] {subprocess.py:75} INFO - Running command: ['/bin/bash', '-c', 'python /opt/***/scripts/faker_seed.py']
+[2025-10-25T23:53:52.061+0000] {subprocess.py:86} INFO - Output:
+[2025-10-25T23:53:52.529+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2025-10-25T23:53:52.562+0000] {taskinstance.py:1398} INFO - Marking task as SUCCESS. dag_id=crypto_events_dag, task_id=generate_fake_history_last_5_days, execution_date=20251025T235347, start_date=20251025T235351, end_date=20251025T235352
+[2025-10-25T23:53:52.602+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-10-25T23:53:52.632+0000] {taskinstance.py:2776} INFO - 1 downstream tasks scheduled from follow-on schedule check

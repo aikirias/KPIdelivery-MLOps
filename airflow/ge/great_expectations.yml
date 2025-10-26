@@ -1,0 +1,67 @@
+config_version: 3.0
+plugins_directory: plugins/
+anonymous_usage_statistics:
+  enabled: false
+
+datasources:
+  crypto_postgres:
+    class_name: Datasource
+    execution_engine:
+      class_name: SqlAlchemyExecutionEngine
+      connection_string: postgresql+psycopg2://airflow:airflow@postgres:5432/crypto_db
+    data_connectors:
+      default_inferred_data_connector_name:
+        class_name: InferredAssetSqlDataConnector
+        name: default_inferred_data_connector_name
+        schema_name: public
+        include_schema_name: true
+      default_runtime_data_connector_name:
+        class_name: RuntimeDataConnector
+        name: default_runtime_data_connector_name
+        batch_identifiers:
+          - default_identifier_name
+
+stores:
+  expectations_store:
+    class_name: ExpectationsStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: expectations/
+  validations_store:
+    class_name: ValidationsStore
+    store_backend:
+      class_name: TupleS3StoreBackend
+      bucket: ${MINIO_BUCKET_GE}
+      prefix: validations
+      boto3_options:
+        endpoint_url: ${MINIO_ENDPOINT}
+        aws_access_key_id: ${AWS_ACCESS_KEY_ID}
+        aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        region_name: us-east-1
+  checkpoint_store:
+    class_name: CheckpointStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: checkpoints/
+  evaluation_parameter_store:
+    class_name: EvaluationParameterStore
+
+data_docs_sites:
+  s3_site:
+    class_name: SiteBuilder
+    store_backend:
+      class_name: TupleS3StoreBackend
+      bucket: ${MINIO_BUCKET_GE}
+      prefix: data_docs
+      boto3_options:
+        endpoint_url: ${MINIO_ENDPOINT}
+        aws_access_key_id: ${AWS_ACCESS_KEY_ID}
+        aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        region_name: us-east-1
+    site_index_builder:
+      class_name: DefaultSiteIndexBuilder
+
+checkpoint_store_name: checkpoint_store
+expectations_store_name: expectations_store
+validations_store_name: validations_store
+evaluation_parameter_store_name: evaluation_parameter_store

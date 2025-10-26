@@ -1,0 +1,5 @@
+psycopg2-binary==2.9.9
+faker==19.6.2
+great_expectations==0.18.12
+pandas==2.0.3
+apache-airflow-providers-amazon==8.20.0

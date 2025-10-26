@@ -1,0 +1,74 @@
+{
+  "expectation_suite_name": "suite_raw_history",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "site_id",
+          "user_id",
+          "purchase_date",
+          "crypto_type",
+          "purchase_price",
+          "purchase_units",
+          "inserted_at"
+        ]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "site_id"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "site_id",
+        "value_set": ["ARGENTINA", "BRASIL", "MEXICO"]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "user_id"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {"column": "user_id", "type_": "BIGINT"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "purchase_date"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "purchase_date",
+        "regex": "^([0-2]?\\d|3[01])/(0?\\d|1[0-2])/20\\d{2}$"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "crypto_type",
+        "value_set": ["BTC", "ETH", "USDC"]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "purchase_price",
+        "min_value": 0
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "purchase_units",
+        "min_value": 0,
+        "strict_min": true
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.12"
+  }
+}
