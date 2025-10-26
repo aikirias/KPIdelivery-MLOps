@@ -19,22 +19,28 @@ Este directorio contiene los DAGs de Airflow, configuraciones y utilidades que i
 - `tasks/modeling.py`: entrenamiento Spark, logging en MLflow, lógica de evaluación/promoción.
 - `tasks/drift.py`: generación y subida de reportes de Evidently.
 
-## Cómo ejecutar el pipeline
+## Cómo probar el flujo completo
 
-1. Asegurate de tener el stack corriendo (`make reset && make up` la primera vez, luego alcanza con `make up`). Spark, MLflow, MinIO y Airflow deben estar “Up”.
-2. Gatillá el DAG (también podés dejar que los Datasets lo disparen):
+1. **Preparar el entorno** – `make reset && make up` (primer uso) o `make up` si los contenedores ya existen. Comprobá con `docker compose ... ps` que Airflow, Spark, MLflow, MinIO y Redis estén “Up”.
+2. **Emitir eventos de Dataset** – Ejecutá `make churn-watchdog` (o `make mlops-run` si querés encadenar todo). Verificá en la UI de Airflow que la corrida `churn_data_watchdog` finalice en verde. *Tip:* En la primera corrida después de un `make reset`, borrá `airflow/mlops/artifacts/source_hashes.json` para que el watchdog detecte cambios desde cero. Para confirmar que se generaron eventos podés consultar:
    ```bash
-   docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
-     airflow dags trigger churn_training_dag
+   docker compose -f infrastructure/docker-compose.yml exec postgres \
+     psql -U airflow -d crypto_db -c "SELECT * FROM dataset_event ORDER BY timestamp DESC LIMIT 5;"
    ```
-   Seguís logs por UI o con `docker compose ... logs -f airflow-worker`.
-3. Tras una corrida exitosa, revisá MLflow (`http://localhost:5000`): deberías ver el nuevo run + una versión registrada. Streamlit (`http://localhost:8601`) mostrará el modelo Production junto con métricas de drift.
-4. Ejecutá el DAG de drift semanal:
-   ```bash
-   docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
-     airflow dags trigger churn_drift_monitor_w
-   ```
-   El HTML queda en el bucket `mlflow-artifacts/drift-reports/<fecha>.html`.
+   Si no aparecen filas nuevas, revisá `airflow/mlops/artifacts/source_hashes.json` (borrarlo fuerza una nueva emisión) y los logs de la tarea `detect_csv_changes`.
+3. **Ejecutar `churn_training_dag`** – Debería dispararse automáticamente tras el paso anterior. Podés forzarlo con `make churn-train`. Seguimiento recomendado:
+   - UI de Airflow → pestaña *Graph* del DAG para ver el avance de cada tarea (`clean_raw_sources`, `feature_engineering`, `train_spark_model`, etc.).
+   - Logs locales `airflow/logs/dag_id=churn_training_dag/...` o `docker compose ... logs -f airflow-worker` para diagnosticar fallas (Spark, GE, DB).
+   - Al finalizar, inspeccioná MLflow (`http://localhost:5000`): el experimento `churn_retention` debe mostrar el run con `roc_auc`, `recent_drift_share` y los artefactos `dataset/` y `explainability/`. En la sección *Models* verificá que `churn-model` tenga una versión nueva/promocionada.
+   - Abrí Streamlit (`http://localhost:8601`) y confirmá que ya no muestre la heurística local sino el modelo Production + gráficos SHAP.
+4. **Generar reporte de drift** – Ejecutá `make churn-drift` (o esperá al schedule semanal). La tarea `run_drift_report` produce un HTML en MinIO (`mlflow-artifacts/drift-reports/<fecha>.html`). Validá también el log de la tarea `log_drift_result` (debería indicar si `drift_detected=true/false`).
+5. **Validar housekeeping** – Revisá que `airflow/mlops/artifacts/reference_history.parquet` haya incorporado el snapshot más reciente, que `dataset_event` acumule sólo los eventos esperados y que `airflow/logs` no contenga errores repetitivos.
+
+### Cómo detectar errores rápido
+- **DAG no dispara tras `make churn-watchdog`**: confirmar que el watchdog terminó en *success* y que el query `SELECT * FROM dataset_event …` muestra nuevos registros; si no, borrar `source_hashes.json` y reintentar.
+- **Fallas en `train_spark_model`**: revisar logs de la tarea (`airflow/logs/.../train_spark_model`) y el Spark UI (`http://localhost:8082`). Los mensajes más comunes apuntan a credenciales de MinIO mal seteadas o a memoria insuficiente.
+- **Promoción omitida**: la tarea `skip_promotion` imprime la métrica candidata vs. Production y el margen requerido (`CHURN_PROMOTION_MIN_DELTA`). Ajustá la variable o mejorá el modelo.
+- **Streamlit sigue en heurística**: confirmar en MLflow > Models que haya una versión en Production y que la transición se haya completado (`promote_model` en verde).
 
 ## Métricas y artefactos en MLflow
 

@@ -6,14 +6,28 @@ Repositorio organizado por capas funcionales:
 - `airflow/`: paquetes de DAGs (`crypto_events`, `churn`), scripts y el contexto de Great Expectations montado dentro de los contenedores de Airflow.
 - `airflow/mlops/`: CSV de origen para el ejercicio de churn y los artefactos derivados (ignorados vía `.gitignore`).
 - `database/`: scripts SQL (DDL + seeds) que Postgres ejecuta al inicializar (esquemas de crypto + base de MLflow).
-- `docs/`: runbooks (`docs/README.md` describe todo el stack y `docs/RUNBOOK.md` detalla el funcionamiento de los DAGs). Cada DAG tiene además su propio playbook (`airflow/dags/churn/CHURN_PLAYBOOK.md`, `airflow/dags/crypto_events/CRYPTO_PLAYBOOK.md`).
+- `docs/`: documentación adicional del stack (guías específicas que acompañan los README principales cuando haga falta). Los detalles operativos de cada DAG viven en sus propios README (`airflow/dags/churn/README.md`, `airflow/dags/crypto_events/README.md`).
 - `app/`: interfaz Streamlit que consume el último modelo en etapa *Production* desde MLflow para scoring manual.
 - `notebooks/`: montados en el contenedor de JupyterLab para experimentación interactiva.
 - `Makefile`: atajos (`make init`, `make up`, `make down`, `make reset`, `make dag-run`, etc.) sobre los comandos de Compose.
 
+## Stack tecnológico y por qué
+
+| Componente | Rol | ¿Por qué? |
+| --- | --- | --- |
+| PostgreSQL 15 | Base operativa (schemas raw/staging/prod/dqm) + metadata de Airflow + BD de MLflow | Motor relacional estable, soporta `ON CONFLICT` para los upserts y se inicializa fácilmente con scripts en `database/sql/init`. |
+| Airflow 2.7 (CeleryExecutor) | Orquestador de los DAGs de crypto y churn | Necesitamos dependencias complejas (Spark, GE, MLflow). Airflow facilita el *scheduling* y la observabilidad vía UI. |
+| Redis 7 | Broker/resultado de Celery | Permite escalar los workers de Airflow sin añadir dependencias extra. |
+| MinIO | Storage S3-compatible para logs de Airflow, artefactos GE y MLflow | Simplifica la integración con GE y MLflow sin depender de un servicio externo de AWS. |
+| Great Expectations | Validaciones DQ antes del merge | Permite implementar el patrón *validate-before-load* y guardar reportes/artefactos trazables. |
+| Spark 3.5 (master/worker) | Entrenamiento distribuido para churn | Necesario para correr PySpark/MLlib y permitir HPO ligero con datasets medianos. |
+| MLflow 2.10 | Tracking + Model Registry | Centraliza métricas, artefactos (dataset, SHAP) y versionado de modelos para consumo por Streamlit. |
+| Streamlit | UI de scoring y explainability | Ofrece una capa rápida para probar el modelo Production y mostrar SHAP sin desarrollar una app full-stack. |
+| JupyterLab | Entorno interactivo | Usado principalmente para testing. |
+
 ## Guía rápida (Happy Path)
 
-1. **Prerequisitos** – Docker Desktop (o motor equivalente) + plugin de Compose, `make` y ~10 GB libres. No hace falta instalar dependencias de Python: todo corre en contenedores.
+1. **Prerequisitos** – Docker + Docker Compose, `make` y ~10 GB libres. No hace falta instalar dependencias, todo corre en contenedores.
 2. **Clonar y configurar** – `git clone <repo>`. El repositorio ya incluye `.env` (credenciales compartidas para Airflow/MinIO/MLflow/Spark). Ajustá puertos/rutas ahí si lo necesitás.
 3. **Arranque en frío** – Desde la raíz ejecutá `make reset`. Esto derriba cualquier stack previo, reinicializa la metadata de Airflow, recrea los volúmenes de Postgres/MinIO y levanta todos los servicios. Esperá a que `docker compose -f infrastructure/docker-compose.yml ps` muestre `Up` para webserver, scheduler, worker, Spark, MLflow, Streamlit, MinIO, pgAdmin, Redis, Postgres y JupyterLab.
 4. **Accesos por defecto**
@@ -23,28 +37,17 @@ Repositorio organizado por capas funcionales:
    - MLflow UI: `http://localhost:5000` (sin autenticación)
    - Streamlit: `http://localhost:8601`
    - JupyterLab: `http://localhost:8888` (token `mlops`)
-5. **Primer flujo de ejecución** (≈10 minutos):
-   1. Lanzá el DAG watchdog para que Airflow registre eventos de Dataset sobre los CSV de churn:
-      ```bash
-      docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
-        airflow dags trigger churn_data_watchdog
-      ```
-      Al detectar cambios (o simplemente porque es la primera corrida), emite eventos y `churn_training_dag` se dispara automáticamente. Seguilo desde la UI (`DAGs > churn_training_dag > Graph`).
-   2. Ejecutá la tubería de crypto una vez:
-      ```bash
-      make dag-run
-      ```
-      Corre `crypto_events_dag` manualmente para la ventana móvil de 5 días usando datos generados con Faker.
-   3. El DAG semanal de *drift* (`churn_drift_monitor_w`) queda programado; podés forzar una corrida desde la UI o con `airflow dags trigger churn_drift_monitor_w`.
-6. **Verificaciones**
-   - MLflow (`http://localhost:5000`) debería mostrar al menos un run en el experimento `churn_retention` con los métricos `roc_auc`, `recent_drift_share`, `recent_drift_detected` y artefactos bajo `dataset/` y `explainability/`.
-   - El bucket `mlflow-artifacts` en MinIO contiene los reportes de drift (HTML) dentro de `drift-reports/`.
-   - Streamlit pasa a consumir el modelo en Production y exhibe los gráficos/tabla de SHAP apenas exista una promoción exitosa.
-   - Las schemas `raw`, `staging`, `prod`, `dqm` en Postgres muestran las tablas de crypto; `dqm.BT_CRYPTO_EVENTS_REJECTS` guarda los registros rechazados por validaciones.
+5. **Siguiente paso** – con los servicios arriba, seguí los README de `airflow/dags/churn` y `airflow/dags/crypto_events` para ejecutar y validar cada flujo usando los targets del `Makefile` (`make dag-run`, `make churn-watchdog`, `make mlops-run`, etc.). Ahí se detallan los pasos, checks y criterios de éxito.
+
+Cuando ejecutes los DAGs (según los README específicos) deberías validar:
+- MLflow (`http://localhost:5000`) con nuevos runs en `churn_retention`, métricos (`roc_auc`, `recent_drift_share`, etc.) y artefactos (`dataset/`, `explainability/`).
+- Reportes de drift en MinIO (`mlflow-artifacts/drift-reports/`).
+- Streamlit (`http://localhost:8601`) consumiendo el modelo en Production y mostrando SHAP.
+- Tablas `raw/staging/prod/dqm` en Postgres con los datos de crypto; `dqm.BT_CRYPTO_EVENTS_REJECTS` registra cualquier validación fallida.
 
 Luego del setup inicial, usualmente alcanza con `make up` para levantar servicios y disparar el DAG que quieras demostrar. Ejecutá `make reset` cuando necesites volver a un estado limpio.
 
-## ¿Por qué dos pipelines?
+## Los dos flujos:
 
 | Workflow | Propósito | Highlights |
 | --- | --- | --- |
@@ -63,4 +66,4 @@ Servicios expuestos localmente:
 | Spark Master UI | `http://localhost:8082` – clúster accesible en `spark://spark-master:7077` |
 | Streamlit | `http://localhost:8601` – UI para scoring ad-hoc con el modelo Production |
 
-Consultá `docs/README.md` para instrucciones completas del stack y `docs/RUNBOOK.md` para detalles de los DAGs (crypto + churn). El `Makefile` sigue siendo la forma más rápida de iniciar, reiniciar o disparar pipelines.
+Para conocer los flujos en detalle, consultá los README específicos de cada DAG (`airflow/dags/churn/README.md` y `airflow/dags/crypto_events/README.md`). El `Makefile` sigue siendo la forma más rápida de iniciar, reiniciar o disparar pipelines.
