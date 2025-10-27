@@ -1,4 +1,4 @@
-"""Central configuration for the crypto events DAG with template helpers."""
+"""Central de config para el DAG, en un entorno productivo esto serian variables/conexiones en algun vault."""
 from __future__ import annotations
 
 from pathlib import Path

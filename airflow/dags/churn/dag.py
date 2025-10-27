@@ -1,4 +1,4 @@
-"""Churn training DAG orchestrating end-to-end MLOps pipeline."""
+"""Churn training DAG."""
 from __future__ import annotations
 
 import pendulum

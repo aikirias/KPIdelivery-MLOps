@@ -1,4 +1,4 @@
-"""Airflow DAG orchestrating MELI crypto event pipeline with validate-before-load."""
+"""Airflow DAG ETQL"""
 from __future__ import annotations
 
 import pendulum
