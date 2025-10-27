@@ -62,6 +62,7 @@ def build_dag() -> DAG:
         finalize = PythonOperator(
             task_id="notify_success",
             python_callable=_notify_success,
+            trigger_rule="none_failed_min_one_success",
         )
 
         clean >> features >> train >> evaluate >> decide
