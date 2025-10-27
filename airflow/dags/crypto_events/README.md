@@ -1,89 +1,112 @@
 # Crypto Events DAG
 
-## Propósito
-Pipeline incremental diario que extrae los últimos 5 días de transacciones cripto, construye la tabla candidata en *staging*, valida con Great Expectations y mergea condicionalmente en `prod.bt_crypto_events`, desactivando filas ausentes.
+### Propósito general
+Pipeline incremental diario que procesa el rango móvil de cinco días de `raw.bt_crypto_transaction_history`, genera candidatos limpios en *staging*, valida cada lote con Great Expectations y aplica un *upsert* seguro en `prod.bt_crypto_events`, desactivando (`is_active=false`) las claves que desaparecen.
 
-## Topología de tareas
-1. **`extract_generate_history`** *(PythonOperator)* – rellena `raw.bt_crypto_transaction_history` con datos determinísticos de Faker usando la `logical_date` como *seed*.
-2. **`transform_build_candidate`** *(SQLExecuteQueryOperator)* – ejecuta `sql/build_events_candidate.sql` para regenerar `staging.bt_crypto_events_candidate`.
-3. **TaskGroup `qa_quality_checks`** – corre los checkpoints `suite_raw_history` y `suite_staging_candidate` mediante `dq.run_ge_validation`; cualquier fallo inserta rechazados en `dqm.bt_crypto_events_rejects`.
-4. **`load_merge_to_prod`** *(SQLExecuteQueryOperator)* – aplica `sql/merge_to_prod.sql` para hacer *upsert* de las filas vigentes y marcar como inactivas las que faltan.
-5. **`notify_success`** – log de cierre.
+---
 
-## Configuración
-- Ajustable vía Variables de Airflow con prefijo `crypto_` (ej.: `crypto_postgres_conn_id`, `crypto_window_days`, `crypto_allowed_sites`). Valores por defecto en `config.py`.
-- Las plantillas SQL viven en `sql/` y usan parámetros vía `params`.
-- Los assets de GE residen en `/opt/airflow/ge`.
+## 1. Flujo completo (qué hace cada tarea)
 
-## Notas de desarrollo
-- Si cambiás la lógica SQL, modificá el archivo correspondiente en `sql/` y asegurate de mantener los mismos parámetros en los operadores definidos en `dag.py`.
-- Helpers:
-  - `utils/extract.py` contiene la lógica de Faker.
-  - `utils/dq.py` ejecuta GE y maneja los inserts en `dqm`.
-- Usá los targets del `Makefile` (`make reset`, `make dag-run`, etc.) para levantar el stack y disparar la DAG end-to-end.
+| Paso | Operador | Descripción |
+| --- | --- | --- |
+| `extract_generate_history` | `PythonOperator` | Ejecuta `scripts/faker_seed.py` para garantizar un mínimo de filas por día en la ventana `hoy-4 … hoy` sin mutar historial previo (usa `logical_date` como *seed* determinístico). |
+| `transform_build_candidate` | `SQLExecuteQueryOperator` | Corre `sql/build_events_candidate.sql`: trunca `staging.bt_crypto_events_candidate`, convierte `purchase_date` (STRING) a `DATE`, calcula `purchase_value = price * units` y persiste sólo el rango móvil. |
+| `qa_quality_checks` | TaskGroup (2× GE) | `dq.run_ge_validation` ejecuta `suite_raw_history` y `suite_staging_candidate`. Los registros que violan reglas se insertan en `dqm.bt_crypto_events_rejects` con su `reason`; cualquier fallo aborta la DAG antes del merge. |
+| `load_merge_to_prod` | `SQLExecuteQueryOperator` | Aplica `sql/merge_to_prod.sql`: `INSERT ... ON CONFLICT DO UPDATE` sobre la PK `(site_id,user_id,purchase_date,crypto_type)` y luego `UPDATE` para marcar `is_active=false` cuando una clave del rango ya no existe en staging. |
+| `notify_success` | `PythonOperator` | Placeholder para notificaciones (hoy sólo loguea en stdout). |
 
-## Cómo probar el flujo y detectar errores
+---
 
-1. **Levantar el stack** – `make reset && make up` (primera vez) o `make up` si los contenedores existen.
-2. **Ejecutar la DAG** – Lanzá `make dag-run`. Esto dispara `crypto_events_dag` inmediatamente; monitorealo desde la UI (vista *Graph*) para verificar que las tareas `extract_generate_history`, `transform_build_candidate`, `qa_quality_checks` y `load_merge_to_prod` se completen en verde.
-3. **Validar Great Expectations** – Si `qa_quality_checks` falla, inspeccioná `dqm.bt_crypto_events_rejects`:
+## 2. Configuración y componentes
+
+- **Variables Airflow (`crypto_*`)**: controlan el `conn_id` de Postgres, la ventana (`crypto_window_days`, por defecto 5) y listas blancas como `crypto_allowed_sites`. Revisa `config.py` para los valores por defecto.
+- **SQL templates**: en `sql/`. Cada `SQLExecuteQueryOperator` pasa sus parámetros vía `params`; mantenelos sincronizados si editás la lógica.
+- **Great Expectations**: el Data Context vive en `/opt/airflow/ge`. Las suites están en `ge/expectations/` y el checkpoint en `ge/checkpoints/crypto_checkpoint.yml`. Los artefactos y Data Docs se publican en MinIO (`s3://ge-artifacts/...`).
+- **Helpers Python**: `utils/extract.py` (Faker) y `utils/dq.py` (wrapper GE + inserción en `dqm`).
+
+---
+
+## 3. Ejecución paso a paso (cómo probarlo)
+
+1. **Levantar servicios**
    ```bash
-   docker compose -f infrastructure/docker-compose.yml exec postgres \\
-     psql -U airflow -d crypto_db -c "SELECT * FROM dqm.bt_crypto_events_rejects ORDER BY rejected_at DESC LIMIT 20;"
+   make reset && make up   # primera vez
+   # o simplemente make up si ya existe el stack
    ```
-   El campo `reason` indica la regla rota. También podés reconstruir Data Docs con
+   Confirmá en la UI de Airflow que `crypto_events_dag` esté *unpaused*.
+
+2. **Disparar el DAG**
    ```bash
-   docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \\
-     great_expectations --v3-api docs build
+   make dag-run
    ```
-   y navegar a `http://localhost:9001/browser/ge-artifacts/data_docs/index.html`.
-4. **Revisar staging y prod** – Tras una corrida exitosa:
-   - `staging.bt_crypto_events_candidate` debe contener sólo fechas entre `CURRENT_DATE-4` y `CURRENT_DATE`.
-   - `prod.bt_crypto_events` debe reflejar los upserts y las bajas lógicas (`is_active=false` para claves ausentes). Comprobalo con:
+   Desde la UI (Graph view) verificá que cada tarea pase a verde. Para logs en vivo:
+   ```bash
+   docker compose -f infrastructure/docker-compose.yml logs -f airflow-worker
+   ```
+
+3. **Validar Great Expectations**
+   - Si `qa_quality_checks` falla, inspeccioná `dqm.bt_crypto_events_rejects`:
      ```bash
-     docker compose -f infrastructure/docker-compose.yml exec postgres \\
-       psql -U airflow -d crypto_db -c "SELECT site_id,user_id,purchase_date,crypto_type,is_active FROM prod.bt_crypto_events ORDER BY purchase_date DESC LIMIT 20;"
+     docker compose -f infrastructure/docker-compose.yml exec postgres \
+       psql -U airflow -d crypto_db -c \
+       "SELECT rejected_at,site_id,user_id,purchase_date_raw,crypto_type,reason \
+        FROM dqm.bt_crypto_events_rejects ORDER BY rejected_at DESC LIMIT 20;"
      ```
-5. **Logs y notificaciones** – Si `load_merge_to_prod` falla por SQL o locks, revisá `airflow/logs/dag_id=crypto_events_dag/.../load_merge_to_prod/` o `docker compose ... logs -f airflow-worker`. `notify_success` deja un mensaje en stdout (quiera loguear en el futuro).
+   - Para visualizar Data Docs:
+     ```bash
+     docker compose -f infrastructure/docker-compose.yml exec airflow-webserver \
+       great_expectations --v3-api docs build
+     ```
+     Luego abrí `http://localhost:9001/browser/ge-artifacts/data_docs`.
 
-### Tips de diagnóstico rápido
-- **GE falla constantemente**: confirmá que los CSV seeds no fueron modificados; si Faker genera datos fuera de rango, revisá `airflow/scripts/faker_seed.py` o vuelve a ejecutar `make reset` para restaurar las semillas iniciales.
-- **Staging vacío**: asegurate de que `transform_build_candidate` corrió (mirá los logs SQL que imprime la tarea) y que `crypto_window_days` no quedó en cero.
-- **Prod no cambia**: GE probablemente abortó antes del merge; revisá el historial de runs en la UI y `dqm.bt_crypto_events_rejects`.
-- **Datos docs no actualizados**: ejecutá el comando de `great_expectations --v3-api docs build` y refrescá la consola de MinIO.
-
-## Cómo probar el flujo completo
-
-1. **Levantar servicios** – `make reset && make up` la primera vez (luego alcanza con `make up`). Confirmá en la UI de Airflow que `crypto_events_dag` esté habilitado.
-2. **Disparar la DAG** – Ejecutá `make dag-run`. Esto corre inmediatamente las tareas `extract_generate_history`, `transform_build_candidate`, `qa_quality_checks`, `load_merge_to_prod` y `notify_success`.
-3. **Monitoreo en vivo** – Desde Airflow (`DAGs > crypto_events_dag > Graph`) asegurate de que cada tarea cambie a verde. Si alguna falla:
-   - Revisá los logs (`docker compose ... logs -f airflow-worker` o `airflow/logs/dag_id=crypto_events_dag/...`).
-   - Consultá `dqm.bt_crypto_events_rejects` para ver las filas rechazadas y su `reason`.
-4. **Validar staging** – Tras el paso `transform_build_candidate`, corré:
+4. **Verificar staging**
    ```bash
-   docker compose -f infrastructure/docker-compose.yml exec postgres \\
-     psql -U airflow -d crypto_db -c \"SELECT MIN(purchase_date),MAX(purchase_date),COUNT(*) FROM staging.bt_crypto_events_candidate;\"
+   docker compose -f infrastructure/docker-compose.yml exec postgres \
+     psql -U airflow -d crypto_db -c \
+     "SELECT MIN(purchase_date), MAX(purchase_date), COUNT(*) \
+        FROM staging.bt_crypto_events_candidate;"
    ```
    El rango debe cubrir exactamente `CURRENT_DATE-4` a `CURRENT_DATE`.
-5. **Validar prod** – Luego de `load_merge_to_prod`, inspeccioná `prod.bt_crypto_events` para comprobar que los registros se insertaron/actualizaron y que `is_active` sólo quede en `true` para el rango móvil:
+
+5. **Verificar producción**
    ```bash
-   docker compose -f infrastructure/docker-compose.yml exec postgres \\
-     psql -U airflow -d crypto_db -c \"SELECT site_id,user_id,purchase_date,crypto_type,is_active FROM prod.bt_crypto_events ORDER BY purchase_date DESC LIMIT 10;\"
+   docker compose -f infrastructure/docker-compose.yml exec postgres \
+     psql -U airflow -d crypto_db -c \
+     "SELECT site_id,user_id,purchase_date,crypto_type,is_active \
+        FROM prod.bt_crypto_events ORDER BY purchase_date DESC LIMIT 10;"
    ```
-6. **Revisar DQ/Docs** – Si las validaciones fallan se registran en `dqm.bt_crypto_events_rejects`; para ver el detalle visual reconstruí los Data Docs con `great_expectations --v3-api docs build` (comando en la sección anterior) y abrí `http://localhost:9001/browser/ge-artifacts/data_docs/index.html`.
+   Confirmá que:
+   - Las nuevas filas aparezcan con `is_active = true`.
+   - Claves antiguas fuera del rango móvil estén en `false`.
 
-### Cómo detectar errores rápidamente
-- **Fallas en GE**: inspeccioná `dqm.bt_crypto_events_rejects`; el campo `reason` indica la regla. Ajustá los datos de origen o Faker y relanzá el DAG.
-- **Staging vacío**: verificá los logs de `transform_build_candidate` (puede haber filtros de fecha erróneos o la ventana `crypto_window_days` en 0).
-- **Producción no cambia**: significa que al menos una validación falló y `load_merge_to_prod` se saltó. Revisión de GE + reintento.
-- **Data Docs desactualizados**: ejecutá el comando de GE mencionado para regenerarlos y revisalos en MinIO.
+6. **Revisar logs finales**
+   - `load_merge_to_prod` imprime el número de filas afectadas en el log (`airflow/logs/.../load_merge_to_prod`).
+   - `notify_success` deja un mensaje de completitud; útil para enganchar alertas futuras.
 
-## Respuestas solicitadas
-1. **Tabla adicional:** Sí, se utiliza `staging.bt_crypto_events_candidate` como buffer validado y `dqm.bt_crypto_events_rejects` como cuarentena. Así se protege `prod.bt_crypto_events`.
-2. **Proceso ETL (4+ pasos):**
-   - **Extract:** Leer `raw.bt_crypto_transaction_history` para los últimos 5 días (Faker sólo agrega lo que falte).
-   - **Transform:** Truncar y cargar `staging.bt_crypto_events_candidate`, parseando fechas y calculando `purchase_value`.
-   - **Validate:** Ejecutar ambas suites de GE; en caso de error, registrar rechazos en `dqm` y abortar.
-   - **Load:** Correr `merge_to_prod.sql`, que hace *upsert* y luego desactiva (`is_active=false`) las claves del rango que ya no existen.
-   - **Post-load:** Mantener métricas DQ y notificar.
-3. **Refresh rolling de 5 días:** Cada corrida reconstruye `staging` sólo con el rango `hoy-4 … hoy`. El merge inserta nuevas filas, actualiza cambios vía `ON CONFLICT … DO UPDATE` y realiza un `UPDATE` extra para marcar `is_active=false` cuando falta en staging. Todo ocurre únicamente si las dos validaciones de GE aprueban, asegurando integridad antes de tocar producción.
+---
+
+## 4. Diagnóstico rápido
+
+| Síntoma | Qué revisar | Acción sugerida |
+| --- | --- | --- |
+| GE falla siempre | `dqm.bt_crypto_events_rejects` + Data Docs | Ajustá los datos de origen; si Faker generó valores fuera de rango, corré `make reset` o edita `scripts/faker_seed.py`. |
+| `staging` vacío | Logs de `transform_build_candidate` | Confirmá filtros de fecha y que `crypto_window_days` > 0. |
+| `prod` no cambia | GE abortó antes del merge | Revisa los logs de GE, corrige, vuelve a ejecutar `make dag-run`. |
+| Data Docs no actualizados | Comando `great_expectations --v3-api docs build` | Reconstruí y refrescá el navegador en MinIO. |
+
+---
+
+## 5. Preguntas del enunciado
+
+1. **¿Es necesaria una tabla adicional para cumplir las condiciones?**  
+   Sí. `staging.bt_crypto_events_candidate` actúa como buffer validado y `dqm.bt_crypto_events_rejects` almacena los registros rechazados con su motivo, lo que evita contaminar `prod.bt_crypto_events`.
+
+2. **Proceso ETL de al menos 4 pasos para la carga:**
+   - **Extract:** leer `raw.bt_crypto_transaction_history` filtrando los últimos 5 días (Faker sólo agrega lo que falte).
+   - **Transform:** truncar + poblar `staging.bt_crypto_events_candidate`, convertir fechas y calcular `purchase_value`.
+   - **Validate:** ejecutar las suites de Great Expectations sobre `raw` y `staging`; si falla, registrar en `dqm` y detener el DAG.
+   - **Load:** ejecutar `merge_to_prod.sql` para hacer *upsert* y luego `UPDATE` para marcar `is_active=false` cuando ya no exista en staging.
+   - **Post-load:** mantener métricas de calidad y notificar el resultado.
+
+3. **Refresh rolling de 5 días:**  
+   Cada ejecución reconstruye `staging` únicamente con la ventana `hoy-4 … hoy`. El merge inserta nuevas filas y actualiza cambios via `ON CONFLICT DO UPDATE`. Luego un `UPDATE` adicional marca `is_active=false` en `prod.bt_crypto_events` cuando la clave del rango móvil ya no aparece en staging. Todo esto ocurre sólo si ambas validaciones de GE se aprueban, garantizando integridad antes de tocar producción.
