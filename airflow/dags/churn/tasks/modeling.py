@@ -2,12 +2,15 @@
 from __future__ import annotations
 
 import json
+import math
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import mlflow
 import mlflow.spark
+import numpy as np
+from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from mlflow.tracking import MlflowClient
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression, LogisticRegressionModel
@@ -18,11 +21,11 @@ from pyspark.sql import SparkSession
 from churn import config
 from churn.tasks import drift
 
-HYPERPARAM_GRID: List[Dict[str, float]] = [
-    {"regParam": 0.01, "elasticNetParam": 0.0},
-    {"regParam": 0.05, "elasticNetParam": 0.3},
-    {"regParam": 0.1, "elasticNetParam": 0.6},
-]
+HPO_SPACE = {
+    "regParam": hp.loguniform("regParam", math.log(1e-4), math.log(1.0)),
+    "elasticNetParam": hp.uniform("elasticNetParam", 0.0, 1.0),
+    "maxIter": hp.quniform("maxIter", 30, 120, 10),
+}
 
 
 def _build_spark_session(app_name: str) -> SparkSession:
@@ -66,27 +69,38 @@ def train_with_spark(**context: Any) -> Dict[str, Any]:
         mlflow.set_tracking_uri(config.MLFLOW_TRACKING_URI)
         mlflow.set_experiment("churn_retention")
 
-        best: Dict[str, Any] = {"metric": -1.0, "model": None, "run_id": None}
-        for idx, params in enumerate(HYPERPARAM_GRID, start=1):
+        best: Dict[str, Any] = {"metric": -1.0, "model": None, "run_id": None, "params": None}
+        trial_counter = {"value": 0}
+
+        def objective(param_sample: Dict[str, float]) -> Dict[str, Any]:
+            trial_counter["value"] += 1
+            max_iter = int(param_sample["maxIter"])
+            reg_param = float(param_sample["regParam"])
+            elastic_net = float(param_sample["elasticNetParam"])
+
             lr = LogisticRegression(
                 featuresCol="features",
                 labelCol="label",
-                maxIter=60,
-                regParam=params["regParam"],
-                elasticNetParam=params["elasticNetParam"],
+                maxIter=max_iter,
+                regParam=reg_param,
+                elasticNetParam=elastic_net,
             )
             pipeline = Pipeline(stages=[assembler, lr])
             model = pipeline.fit(train_df)
             auc = evaluator.evaluate(model.transform(test_df))
 
-            run_name = f"churn_{context['logical_date'].date()}_hp_{idx}"
+            run_name = (
+                f"churn_{context['logical_date'].date()}_hpo_{trial_counter['value']}"
+            )
             with mlflow.start_run(run_name=run_name) as run:
                 mlflow.log_params(
                     {
-                        "regParam": params["regParam"],
-                        "elasticNetParam": params["elasticNetParam"],
+                        "regParam": reg_param,
+                        "elasticNetParam": elastic_net,
+                        "maxIter": max_iter,
                         "feature_columns": ",".join(feature_cols),
                         "algorithm": "spark_logistic_regression",
+                        "hpo_algorithm": "tpe",
                     }
                 )
                 mlflow.log_metric(config.METRIC_KEY, float(auc))
@@ -95,8 +109,29 @@ def train_with_spark(**context: Any) -> Dict[str, Any]:
 
             if auc > best["metric"]:
                 best.update(
-                    {"metric": float(auc), "model": model, "params": params, "run_id": run_id}
+                    {
+                        "metric": float(auc),
+                        "model": model,
+                        "run_id": run_id,
+                        "params": {
+                            "regParam": reg_param,
+                            "elasticNetParam": elastic_net,
+                            "maxIter": max_iter,
+                        },
+                    }
                 )
+
+            return {"loss": 1 - auc, "status": STATUS_OK}
+
+        trials = Trials()
+        fmin(
+            fn=objective,
+            space=HPO_SPACE,
+            algo=tpe.suggest,
+            max_evals=config.HPO_MAX_EVALS,
+            trials=trials,
+            rstate=np.random.default_rng(config.HPO_SEED),
+        )
 
         if not best["model"]:
             raise RuntimeError("No Spark model was trained successfully.")
@@ -209,7 +244,6 @@ def _log_mean_abs_shap(run_id: str, importance: Dict[str, float], shap_path: Pat
 
 
 def _log_explainability(model, run_id: str) -> tuple[Path, Dict[str, float]]:
-    import numpy as np
     import pandas as pd
     import shap
     from matplotlib import pyplot as plt

@@ -3,7 +3,7 @@
 Este directorio contiene los DAGs de Airflow, configuraciones y utilidades que implementan el pipeline de churn. Cubre el ciclo MLOps completo:
 
 1. **Preparación de datos**: `clean_raw_sources` y `feature_engineering` leen los CSV de `/opt/mlops`, consolidan la base de usuarios, generan agregaciones/labels y persist en parquet dentro de `airflow/mlops/artifacts/`.
-2. **Entrenamiento de modelo** (`train_spark_model`): crea una sesión Spark (`spark://spark-master:7077`), ejecuta una grilla liviana de `regParam`/`elasticNetParam`, evalúa sobre un *holdout* y conserva el mejor resultado. Además loguea en MLflow los métricos de Evidently (`drift_share` / `drift_detected`) junto con el `roc_auc`, el snapshot del dataset y los artefactos SHAP (PNG + mean_abs). El modelo se registra en `churn-model`.
+2. **Entrenamiento de modelo** (`train_spark_model`): crea una sesión Spark (`spark://spark-master:7077`), ejecuta **Hyperopt (TPE)** para buscar automáticamente los mejores `regParam`, `elasticNetParam` y `maxIter`, evalúa cada candidato sobre un *holdout* y conserva el de mayor AUC. Además loguea en MLflow los métricos de Evidently (`drift_share` / `drift_detected`) junto con el `roc_auc`, el snapshot del dataset y los artefactos SHAP (PNG + mean_abs). El modelo se registra en `churn-model`.
 3. **Evaluación y registro**: `evaluate_candidate` compara el AUC del candidato contra la versión Production y `decide_promotion` enruta a `promote_model` o `skip_promotion`. Así Streamlit/Jupyter siempre consumen la versión más reciente.
 4. **Monitoreo de drift** (`churn_drift_monitor_w`): DAG semanal que toma el último snapshot, corre Evidently contra las últimas 8 semanas, sube el reporte HTML a `s3://mlflow-artifacts/drift-reports/<fecha>.html` e informa si se detectó drift.
 5. **Watchdog de datasets** (`churn_data_watchdog`): calcula hashes diarios de los CSV; si detecta cambios emite eventos de Dataset que disparan `churn_training_dag`. Sin cambios ⇒ no se reentrena.
@@ -19,6 +19,12 @@ Este directorio contiene los DAGs de Airflow, configuraciones y utilidades que i
 - `tasks/modeling.py`: entrenamiento Spark, logging en MLflow, lógica de evaluación/promoción.
 - `tasks/drift.py`: generación y subida de reportes de Evidently.
 
+## Optimización de hiperparámetros con Hyperopt
+- Cada corrida de `train_spark_model` lanza `CHURN_HPO_MAX_EVALS` (default 12) evaluaciones usando TPE; podés ajustarlo con la variable de entorno del mismo nombre.
+- `CHURN_HPO_SEED` (default 42) fija el seed para repetir los resultados.
+- Cada evaluación se registra como un run distinto en MLflow (ej. `churn_<fecha>_hpo_<n>`). El mejor run es el que luego genera SHAP, dataset y métricas de drift.
+- En los parámetros logueados vas a encontrar también `maxIter`, `regParam`, `elasticNetParam` y el identificador del algoritmo (`hpo_algorithm = tpe`).
+
 ## Cómo probar el flujo completo
 
 1. **Preparar el entorno** – `make reset && make up` (primer uso) o `make up` si los contenedores ya existen. Comprobá con `docker compose ... ps` que Airflow, Spark, MLflow, MinIO y Redis estén “Up”.
@@ -31,7 +37,7 @@ Este directorio contiene los DAGs de Airflow, configuraciones y utilidades que i
 3. **Ejecutar `churn_training_dag`** – Debería dispararse automáticamente tras el paso anterior. Podés forzarlo con `make churn-train`. Seguimiento recomendado:
    - UI de Airflow → pestaña *Graph* del DAG para ver el avance de cada tarea (`clean_raw_sources`, `feature_engineering`, `train_spark_model`, etc.).
    - Logs locales `airflow/logs/dag_id=churn_training_dag/...` o `docker compose ... logs -f airflow-worker` para diagnosticar fallas (Spark, GE, DB).
-   - Al finalizar, inspeccioná MLflow (`http://localhost:5000`): el experimento `churn_retention` debe mostrar el run con `roc_auc`, `recent_drift_share` y los artefactos `dataset/` y `explainability/`. En la sección *Models* verificá que `churn-model` tenga una versión nueva/promocionada.
+   - Al finalizar, inspeccioná MLflow (`http://localhost:5000`): el experimento `churn_retention` debe listar varios runs (`…_hpo_…`). El de mayor `roc_auc` será el que tenga artefactos `dataset/` y `explainability/`. En la sección *Models* verificá si `churn-model` creó/promocionó una nueva versión.
    - Abrí Streamlit (`http://localhost:8601`) y confirmá que ya no muestre la heurística local sino el modelo Production + gráficos SHAP.
 4. **Generar reporte de drift** – Ejecutá `make churn-drift` (o esperá al schedule semanal). La tarea `run_drift_report` produce un HTML en MinIO (`mlflow-artifacts/drift-reports/<fecha>.html`). Validá también el log de la tarea `log_drift_result` (debería indicar si `drift_detected=true/false`).
 5. **Validar housekeeping** – Revisá que `airflow/mlops/artifacts/reference_history.parquet` haya incorporado el snapshot más reciente, que `dataset_event` acumule sólo los eventos esperados y que `airflow/logs` no contenga errores repetitivos.
